@@ -3,308 +3,345 @@
 <head>
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
-  <title>Cientistas do Futuro - Quiz</title>
-  <link href="https://fonts.googleapis.com/css2?family=Great+Vibes&display=swap" rel="stylesheet">
+  <title>Cientistas do Futuro</title>
+  <link href="https://fonts.googleapis.com/css2?family=VT323&display=swap" rel="stylesheet">
   <style>
-    * { box-sizing: border-box; font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif; }
+    * { 
+      box-sizing: border-box; 
+      font-family: 'VT323', monospace; 
+      letter-spacing: 1px;
+    }
     body {
-      background: linear-gradient(135deg, #0f172a, #1e1b4b);
+      background: #060214;
+      color: #ffffff;
       margin: 0;
       padding: 15px;
-      display: flex;
-      justify-content: center;
-      align-items: center;
       min-height: 100vh;
-      color: #f8fafc;
-    }
-    .card {
-      background: #1e293b;
-      border: 1px solid #334155;
-      border-radius: 24px;
-      padding: 25px;
-      max-width: 450px;
-      width: 100%;
-      box-shadow: 0 10px 30px rgba(0,0,0,0.5);
-      text-align: center;
-    }
-    h1 { color: #fb7185; font-size: 1.7rem; margin-bottom: 8px; }
-    p { color: #cbd5e1; font-size: 1.05rem; line-height: 1.5; }
-    
-    input[type="text"], textarea {
-      width: 100%;
-      padding: 14px;
-      border: 2px solid #334155;
-      border-radius: 14px;
-      font-size: 1.05rem;
-      margin: 12px 0;
-      background: #0f172a;
-      color: white;
-      text-align: center;
-      resize: none;
-    }
-    
-    .btn-main {
-      background: linear-gradient(135deg, #8b5cf6, #7c3aed);
-      color: white;
-      border: none;
-      padding: 15px 28px;
-      font-size: 1.15rem;
-      border-radius: 14px;
-      cursor: pointer;
-      width: 100%;
-      font-weight: bold;
-      box-shadow: 0 4px 15px rgba(124,58,237,0.3);
-      transition: all 0.2s;
-    }
-    .btn-main:active { transform: scale(0.98); }
-    
-    .btn-gold {
-      background: linear-gradient(135deg, #d97706, #b45309);
-      box-shadow: 0 4px 15px rgba(217,119,6,0.4);
-      margin-top: 15px;
-    }
-    
-    .options-grid { display: flex; flex-direction: column; gap: 10px; margin-top: 15px; }
-    .btn-opt {
-      padding: 15px;
-      font-size: 1.05rem;
-      font-weight: bold;
-      color: white;
-      border: none;
-      border-radius: 14px;
-      cursor: pointer;
-      text-align: left;
-      line-height: 1.3;
-    }
-    .btn-opt:active { transform: scale(0.98); }
-    .btn-opt:disabled { opacity: 0.4; cursor: not-allowed; }
-    .opt-a { background: #e11d48; }
-    .opt-b { background: #0284c7; }
-    .opt-c { background: #d97706; }
-    .opt-d { background: #059669; }
-
-    /* REGRA CRUCIAL PARA ESCONDER AS TELAS INATIVAS */
-    .hidden { display: none !important; }
-
-    /* DESIGN PREMIUM DO CERTIFICADO OFICIAL */
-    .certificado-container {
-      background: #ffffff;
-      color: #0f172a;
-      border: 8px double #d97706;
-      border-radius: 16px;
-      padding: 30px 20px 20px 20px;
-      margin-top: 15px;
-      text-align: center;
-      box-shadow: 0 15px 35px rgba(0,0,0,0.5);
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      justify-content: center;
+      overflow: hidden;
       position: relative;
     }
-    .cert-title { 
-      font-size: 1.6rem; 
-      font-weight: 900; 
-      color: #0f172a; 
-      margin: 0; 
-      font-family: 'Georgia', serif; 
-      letter-spacing: 1.5px;
-    }
-    .cert-sub { 
-      font-size: 0.85rem; 
-      color: #b45309; 
-      font-weight: 700; 
-      margin-top: 4px; 
-      text-transform: uppercase; 
-      letter-spacing: 1px; 
-    }
-    .cert-body { 
-      font-size: 0.95rem; 
-      color: #334155; 
-      margin: 18px 0 5px 0; 
-      line-height: 1.5; 
-    }
-    .cert-nome { 
-      font-size: 2.8rem; 
-      font-weight: normal; 
-      color: #000000; 
-      font-family: 'Great Vibes', cursive; 
-      margin: 5px 0 10px 0; 
-      display: block; 
-    }
-    .cert-footer-center { 
-      margin-top: 25px; 
-      border-top: 1px dashed #cbd5e1; 
-      padding-top: 15px; 
-      font-size: 0.8rem; 
-      color: #475569; 
-      text-align: center; 
-      line-height: 1.6;
+
+    #space-canvas {
+      position: fixed;
+      top: 0;
+      left: 0;
+      width: 100vw;
+      height: 100vh;
+      z-index: 0;
+      pointer-events: none;
+      image-rendering: pixelated;
     }
 
-    @media print {
-      body { background: white; padding: 0; }
-      .card { border: none; box-shadow: none; max-width: 100%; width: 100%; background: white; }
-      .btn-main, .btn-gold, h1, p, #num-pergunta-mobile { display: none !important; }
-      .certificado-container { border: 10px double #d97706; box-shadow: none; }
+    .retro-box {
+      background: rgba(26, 12, 64, 0.92);
+      border: 3px solid #38bdf8;
+      box-shadow: 0 0 25px rgba(56, 189, 248, 0.3), 6px 6px 0px #000000;
+      padding: 25px 20px;
+      max-width: 480px;
+      width: 100%;
+      text-align: center;
+      border-radius: 8px;
+      position: relative;
+      z-index: 10;
     }
+
+    h1 {
+      color: #facc15;
+      font-size: 2.8rem;
+      margin: 0 0 15px 0;
+      text-transform: uppercase;
+      text-shadow: 2px 2px #000000;
+    }
+
+    h2 {
+      color: #38bdf8;
+      font-size: 2rem;
+      text-shadow: 2px 2px #000;
+      margin: 10px 0;
+      line-height: 1.3;
+    }
+
+    p {
+      font-size: 1.4rem;
+      line-height: 1.4;
+      color: #fef08a;
+      margin: 12px 0;
+    }
+
+    input[type="text"], textarea {
+      width: 100%;
+      background: #0d0628;
+      border: 2px solid #38bdf8;
+      color: #ffffff;
+      padding: 12px;
+      font-size: 1.5rem;
+      margin: 10px 0 20px 0;
+      outline: none;
+      box-shadow: inset 3px 3px 0px #000;
+      border-radius: 4px;
+    }
+
+    .btn-pixel {
+      width: 100%;
+      background: #22c55e;
+      color: #ffffff;
+      border: 3px solid #ffffff;
+      box-shadow: 4px 4px 0px #000000;
+      padding: 14px;
+      font-size: 1.8rem;
+      cursor: pointer;
+      margin-top: 10px;
+      text-transform: uppercase;
+    }
+
+    .opcoes-grid {
+      display: flex;
+      flex-direction: column;
+      gap: 12px;
+      margin-top: 15px;
+    }
+
+    .btn-opcao {
+      background: #1a0c40;
+      border: 2px solid #38bdf8;
+      color: #ffffff;
+      padding: 12px 15px;
+      font-size: 1.4rem;
+      text-align: left;
+      cursor: pointer;
+      box-shadow: 4px 4px 0px #000000;
+    }
+
+    .info-card {
+      background: #0d0628;
+      border: 2px dashed #facc15;
+      padding: 20px;
+      margin: 15px 0;
+    }
+
+    .hidden { display: none !important; }
   </style>
 </head>
 <body>
 
-  <div class="card">
+  <canvas id="space-canvas"></canvas>
+
+  <div class="retro-box">
+
     <!-- TELA 1: LOGIN -->
-    <div id="tela-login">
-      <h1>🚀 Cientistas do Futuro</h1>
-      <p>Digite seu nome ou apelido para entrar no jogo:</p>
-      <input type="text" id="apelido" placeholder="Ex: Julia, Caio, Ana..." maxlength="15">
-      <button class="btn-main" onclick="entrarNoJogo()">Entrar no Quiz!</button>
-    </div>
-
-    <!-- TELA 2: ESPERA -->
-    <div id="tela-espera" class="hidden">
-      <h2>🎉 Oi, <span id="nome-jogador" style="color: #fb7185;"></span>!</h2>
-      <p>Você já está conectado(a)!</p>
-      <p>Aguarde a facilitadora iniciar a pergunta na tela grande...</p>
-    </div>
-
-    <!-- TELA 3: QUIZ COM OPÇÕES -->
-    <div id="tela-quiz" class="hidden">
-      <h3 id="num-pergunta-mobile" style="color: #fb7185; margin:0;">Pergunta 1</h3>
-      <p id="status-voto">Escolha a sua resposta:</p>
+    <div id="c-tela-login">
+      <h1>Cientistas do Futuro</h1>
+      <p style="color: #38bdf8;">Digite seu nome para entrar no jogo:</p>
       
-      <div class="options-grid">
-        <button class="btn-opt opt-a" onclick="votar('A')">A) <span id="lbl-A"></span></button>
-        <button class="btn-opt opt-b" onclick="votar('B')">B) <span id="lbl-B"></span></button>
-        <button class="btn-opt opt-c" onclick="votar('C')">C) <span id="lbl-C"></span></button>
-        <button class="btn-opt opt-d" onclick="votar('D')">D) <span id="lbl-D"></span></button>
-      </div>
+      <input type="text" id="nome-jogador" placeholder="Seu nome aqui..." maxlength="20" autocomplete="off">
+      <button type="button" id="btn-entrar" class="btn-pixel">Entrar no Jogo</button>
     </div>
 
-    <!-- TELA 4: MURAL DE SONHOS ISOLADO -->
-    <div id="tela-sonho-isolado" class="hidden">
-      <h2 style="color: #c084fc; margin-top:0;">✨ O Futuro da Tecnologia ✨</h2>
-      <p>O que você deseja criar com a tecnologia quando crescer?</p>
-      
-      <div id="box-envio-sonho">
-        <textarea id="texto-sonho" rows="3" placeholder="Ex: Um robô pra cuidar do meio ambiente, um jogo novo de computador..."></textarea>
-        <button class="btn-main" onclick="enviarSonho()">🚀 Publicar no Mural ao Vivo</button>
-      </div>
-    </div>
-
-    <!-- TELA 5: CONFIRMAÇÃO DO ENVIO & LINK DO CERTIFICADO -->
-    <div id="tela-link-certificado" class="hidden">
-      <h2 style="color: #34d399; margin-top:0;">✅ Sonho Enviado!</h2>
-      <p style="color: #cbd5e1;">Sua ideia já está aparecendo no Telão da Oficina!</p>
-      <p style="font-size: 1.1rem; margin-top: 20px;">Você completou com sucesso a nossa jornada sobre Ciência e Protagonismo Feminino!</p>
-
-      <button class="btn-main btn-gold" onclick="abrirCertificado()">📜 Ver Meu Certificado Oficial</button>
-    </div>
-
-    <!-- TELA 6: CERTIFICADO OFICIAL PREMIUM -->
-    <div id="tela-certificado-oficial" class="hidden">
-      <div class="certificado-container">
-        <h2 class="cert-title">CERTIFICADO DE MÉRITO</h2>
-        <div class="cert-sub">Jovem Cientista do Futuro</div>
-        
-        <p class="cert-body">
-          Certificamos com honras que
+    <!-- TELA 2: AGUARDANDO PALESTRANTE -->
+    <div id="c-tela-espera" class="hidden">
+      <h2>Olá, <span id="boas-vindas-nome" style="color: #f472b6;"></span>!</h2>
+      <div class="info-card">
+        <p style="font-size: 1.5rem; color: #38bdf8; margin: 0; line-height: 1.5;">
+          Aguarde a palestrante iniciar o Quiz
         </p>
-
-        <span class="cert-nome" id="cert-nome-crianca">Nome do Aluno</span>
-
-        <p class="cert-body" style="font-size: 0.88rem; margin-top: 0;">
-          concluiu com êxito a <strong>Oficina de Tecnologia da Informação e Protagonismo Feminino na Ciência</strong>, demonstrando curiosidade, lógica e criatividade.
-        </p>
-
-        <div class="cert-footer-center">
-          <strong style="color: #1e293b; font-size: 0.85rem; display: block; margin-bottom: 3px;">
-            Instituto Nacional de Pesquisas Espaciais
-          </strong>
-          São José dos Campos - SP • 26/10/2026
-        </div>
       </div>
+    </div>
 
-      <button class="btn-main" style="margin-top: 20px; background: #334155;" onclick="window.print()">🖨️ Salvar / Imprimir PDF</button>
+    <!-- TELA 3: RESPONDER PERGUNTA -->
+    <div id="c-tela-pergunta" class="hidden">
+      <h2 id="c-numero-pergunta" style="color: #facc15;">PERGUNTA</h2>
+      <p id="c-texto-pergunta" style="font-size: 1.5rem; text-align: left;"></p>
+      <div id="c-opcoes-container" class="opcoes-grid"></div>
+    </div>
+
+    <!-- TELA 4: CONFIRMAÇÃO DE RESPOSTA -->
+    <div id="c-tela-confirmacao" class="hidden">
+      <h2>Resposta Enviada! 🚀</h2>
+      <div class="info-card">
+        <p style="color: #fef08a;">Você escolheu a opção <span id="opcao-escolhida" style="color: #38bdf8; font-weight: bold;"></span></p>
+        <p style="font-size: 1.2rem; color: #94a3b8; margin-top: 10px;">Aguarde a revelação do resultado no telão!</p>
+      </div>
+    </div>
+
+    <!-- TELA 5: MURAL DO FUTURO -->
+    <div id="c-tela-mural" class="hidden">
+      <h1>Mural do Futuro</h1>
+      <p style="color: #38bdf8;">Qual é o seu maior sonho para o futuro?</p>
+      <textarea id="texto-sonho" rows="3" placeholder="Ex: Quero ser astronauta..."></textarea>
+      <button type="button" id="btn-enviar-sonho" class="btn-pixel">Enviar Meu Sonho</button>
+      <div id="msg-sonho-enviado" class="hidden info-card" style="margin-top: 15px;">
+        <p style="color: #86efac; margin: 0;">✨ Sonho enviado com sucesso! Olhe para o telão!</p>
+      </div>
     </div>
 
   </div>
 
   <script src="/socket.io/socket.io.js"></script>
   <script>
-    const socket = io();
-    let meuApelido = "";
-    let jaVotou = false;
+    // --- LÓGICA DA GALÁXIA ---
+    const canvas = document.getElementById('space-canvas');
+    const ctx = canvas.getContext('2d');
 
-    function entrarNoJogo() {
-      const input = document.getElementById('apelido');
-      if (input.value.trim() === "") {
+    function resizeCanvas() {
+      canvas.width = window.innerWidth || document.documentElement.clientWidth;
+      canvas.height = window.innerHeight || document.documentElement.clientHeight;
+    }
+    window.addEventListener('resize', resizeCanvas);
+    resizeCanvas();
+
+    const stars = [];
+    for (let i = 0; i < 140; i++) {
+      stars.push({
+        x: (Math.random() - 0.5) * canvas.width * 2,
+        y: (Math.random() - 0.5) * canvas.height * 2,
+        z: Math.random() * canvas.width,
+        color: ['#ffffff', '#38bdf8', '#fef08a', '#f472b6', '#a855f7'][Math.floor(Math.random() * 5)]
+      });
+    }
+
+    const celestialObjects = [
+      { type: 'ringed', baseRadius: 22, color: '#38bdf8', ringColor: '#4ade80', z: 180, xOffset: -0.32, yOffset: 0.32 },
+      { type: 'craters', baseRadius: 28, color: '#f97316', craterColor: '#c2410c', z: 450, xOffset: 0.32, yOffset: -0.25 }
+    ];
+
+    function drawSpace() {
+      ctx.fillStyle = '#060214';
+      ctx.fillRect(0, 0, canvas.width, canvas.height);
+      const cx = canvas.width / 2;
+      const cy = canvas.height / 2;
+
+      stars.forEach(star => {
+        star.z -= 2;
+        if (star.z <= 0) {
+          star.z = canvas.width;
+          star.x = (Math.random() - 0.5) * canvas.width * 2;
+          star.y = (Math.random() - 0.5) * canvas.height * 2;
+        }
+        const k = 256 / star.z;
+        const px = star.x * k + cx;
+        const py = star.y * k + cy;
+
+        if (px >= 0 && px <= canvas.width && py >= 0 && py <= canvas.height) {
+          const size = Math.max(1, Math.floor((1 - star.z / canvas.width) * 3));
+          ctx.fillStyle = star.color;
+          ctx.fillRect(Math.floor(px), Math.floor(py), size, size);
+        }
+      });
+
+      celestialObjects.forEach(obj => {
+        obj.z -= 1;
+        if (obj.z <= 10) obj.z = 950;
+        const scale = 250 / obj.z;
+        const px = cx + (canvas.width * obj.xOffset) * scale;
+        const py = cy + (canvas.height * obj.yOffset) * scale;
+        const radius = Math.max(4, obj.baseRadius * scale);
+
+        if (px + radius > 0 && px - radius < canvas.width && py + radius > 0 && py - radius < canvas.height) {
+          ctx.save();
+          ctx.translate(px, py);
+          ctx.fillStyle = obj.color;
+          ctx.beginPath();
+          ctx.arc(0, 0, radius, 0, Math.PI * 2);
+          ctx.fill();
+          ctx.restore();
+        }
+      });
+
+      requestAnimationFrame(drawSpace);
+    }
+    drawSpace();
+
+    // --- LÓGICA DO SOCKET E CLIQUE DO BOTÃO ---
+    const socket = io();
+    let meuNome = "";
+    let perguntaAtualNum = 0;
+
+    const btnEntrar = document.getElementById('btn-entrar');
+    const inputNome = document.getElementById('nome-jogador');
+
+    btnEntrar.addEventListener('click', function() {
+      const nomeDigitado = inputNome.value.trim();
+
+      if (!nomeDigitado) {
         alert("Por favor, digite seu nome!");
         return;
       }
-      meuApelido = input.value.trim();
-      document.getElementById('nome-jogador').innerText = meuApelido;
-      document.getElementById('cert-nome-crianca').innerText = meuApelido;
-      
-      socket.emit('novo_jogador', meuApelido);
 
-      document.getElementById('tela-login').classList.add('hidden');
-      document.getElementById('tela-espera').classList.remove('hidden');
-    }
+      meuNome = nomeDigitado;
 
-    function votar(opcao) {
-      if (jaVotou) return;
-      jaVotou = true;
-      socket.emit('enviar_resposta', opcao);
-      document.getElementById('status-voto').innerText = "✅ Resposta " + opcao + " enviada com sucesso!";
-      desabilitarBotoes(true);
-    }
-
-    function desabilitarBotoes(desabilitar) {
-      document.querySelectorAll('.btn-opt').forEach(b => b.disabled = desabilitar);
-    }
-
-    function enviarSonho() {
-      const input = document.getElementById('texto-sonho');
-      if (input.value.trim() === "") {
-        alert("Digite o seu sonho antes de enviar!");
-        return;
+      // 1. Notifica o servidor Socket.io
+      if (socket) {
+        socket.emit('novo_jogador', meuNome);
       }
-      socket.emit('enviar_sonho', input.value.trim());
-      
-      document.getElementById('tela-sonho-isolado').classList.add('hidden');
-      document.getElementById('tela-link-certificado').classList.remove('hidden');
-    }
 
-    function abrirCertificado() {
-      document.getElementById('tela-link-certificado').classList.add('hidden');
-      document.getElementById('tela-certificado-oficial').classList.remove('hidden');
-    }
-
-    socket.on('nova_pergunta', (data) => {
-      if (!meuApelido) return;
-
-      jaVotou = false;
-      desabilitarBotoes(false);
-      document.getElementById('status-voto').innerText = "Escolha a sua resposta:";
-
-      document.getElementById('tela-login').classList.add('hidden');
-      document.getElementById('tela-espera').classList.add('hidden');
-      document.getElementById('tela-sonho-isolado').classList.add('hidden');
-      document.getElementById('tela-link-certificado').classList.add('hidden');
-      document.getElementById('tela-certificado-oficial').classList.add('hidden');
-      document.getElementById('tela-quiz').classList.remove('hidden');
-
-      document.getElementById('num-pergunta-mobile').innerText = "Pergunta " + data.numero + " / " + data.totalPerguntas;
-      document.getElementById('lbl-A').innerText = data.opcoes.A;
-      document.getElementById('lbl-B').innerText = data.opcoes.B;
-      document.getElementById('lbl-C').innerText = data.opcoes.C;
-      document.getElementById('lbl-D').innerText = data.opcoes.D;
+      // 2. Muda a tela obrigatoriamente
+      document.getElementById('boas-vindas-nome').innerText = meuNome;
+      document.getElementById('c-tela-login').classList.add('hidden');
+      document.getElementById('c-tela-espera').classList.remove('hidden');
     });
 
-    socket.on('abrir_mural_ranking', () => {
-      if (!meuApelido) return;
-      document.getElementById('tela-login').classList.add('hidden');
-      document.getElementById('tela-espera').classList.add('hidden');
-      document.getElementById('tela-quiz').classList.add('hidden');
-      
-      document.getElementById('tela-sonho-isolado').classList.remove('hidden');
+    socket.on('receber_pergunta', (dados) => {
+      perguntaAtualNum = dados.numero;
+      document.getElementById('c-numero-pergunta').innerText = `PERGUNTA ${dados.numero}`;
+      document.getElementById('c-texto-pergunta').innerText = dados.pergunta;
+
+      const container = document.getElementById('c-opcoes-container');
+      container.innerHTML = "";
+
+      Object.keys(dados.opcoes).forEach(chave => {
+        const btn = document.createElement('button');
+        btn.className = 'btn-opcao';
+        btn.innerHTML = `<strong style="color: #facc15;">${chave.toUpperCase()})</strong> ${dados.opcoes[chave]}`;
+        btn.onclick = () => responder(chave);
+        container.appendChild(btn);
+      });
+
+      document.getElementById('c-tela-login').classList.add('hidden');
+      document.getElementById('c-tela-espera').classList.add('hidden');
+      document.getElementById('c-tela-confirmacao').classList.add('hidden');
+      document.getElementById('c-tela-pergunta').classList.remove('hidden');
+    });
+
+    function responder(opcaoChave) {
+      socket.emit('enviar_resposta', {
+        nome: meuNome,
+        numeroPergunta: perguntaAtualNum,
+        resposta: opcaoChave
+      });
+
+      document.getElementById('opcao-escolhida').innerText = opcaoChave.toUpperCase();
+      document.getElementById('c-tela-pergunta').classList.add('hidden');
+      document.getElementById('c-tela-confirmacao').classList.remove('hidden');
+    }
+
+    socket.on('abrir_mural', () => {
+      document.getElementById('c-tela-login').classList.add('hidden');
+      document.getElementById('c-tela-espera').classList.add('hidden');
+      document.getElementById('c-tela-pergunta').classList.add('hidden');
+      document.getElementById('c-tela-confirmacao').classList.add('hidden');
+      document.getElementById('c-tela-mural').classList.remove('hidden');
+    });
+
+    document.getElementById('btn-enviar-sonho').addEventListener('click', function() {
+      const textarea = document.getElementById('texto-sonho');
+      const sonho = textarea.value.trim();
+
+      if (!sonho) {
+        alert("Escreva seu sonho antes de enviar!");
+        return;
+      }
+
+      socket.emit('enviar_sonho', {
+        nome: meuNome,
+        sonho: sonho
+      });
+
+      document.getElementById('msg-sonho-enviado').classList.remove('hidden');
+      textarea.disabled = true;
     });
   </script>
 </body>
