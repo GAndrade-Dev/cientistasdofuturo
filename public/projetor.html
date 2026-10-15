@@ -3,229 +3,473 @@
 <head>
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
-  <title>Painel do Projetor - INPE</title>
+  <title>Cientistas do Futuro</title>
+  <!-- Fonte Retro Limpa e Muito Legivel -->
+  <link href="https://fonts.googleapis.com/css2?family=VT323&display=swap" rel="stylesheet">
   <style>
-    * { box-sizing: border-box; font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif; }
-    body { background: #0b0f19; color: #f8fafc; margin: 0; padding: 25px; text-align: center; }
-    .container { max-width: 950px; margin: 0 auto; }
-    
-    .header { display: flex; justify-content: space-between; align-items: center; background: #151d30; padding: 18px 28px; border-radius: 18px; margin-bottom: 20px; border: 1px solid #2a3855; }
-    .status-badge { background: linear-gradient(135deg, #e11d48, #be123c); padding: 10px 22px; border-radius: 20px; font-weight: bold; font-size: 1.2rem; }
-    .card-projetor { background: #151d30; padding: 30px; border-radius: 24px; border: 1px solid #2a3855; box-shadow: 0 10px 30px rgba(0,0,0,0.5); }
-    
-    h1 { color: #fb7185; font-size: 2.6rem; margin: 0 0 10px 0; }
-    h2 { font-size: 1.8rem; color: #f1f5f9; margin-bottom: 20px; line-height: 1.4; }
-    
-    .opcoes-lista { text-align: left; background: #0b0f19; padding: 22px; border-radius: 16px; margin: 20px 0; font-size: 1.25rem; line-height: 1.8; border: 1px solid #2a3855; }
-    .opcoes-lista p { margin: 8px 0; }
-    
-    .btn-control { background: #e11d48; color: white; border: none; padding: 16px 32px; font-size: 1.25rem; font-weight: bold; border-radius: 14px; cursor: pointer; margin: 10px; transition: all 0.2s; box-shadow: 0 4px 12px rgba(225,29,72,0.3); }
-    .btn-control:hover { background: #f43f5e; transform: translateY(-2px); }
-    .btn-green { background: #10b981; box-shadow: 0 4px 12px rgba(16,185,129,0.3); }
-    .btn-green:hover { background: #059669; }
+    * { 
+      box-sizing: border-box; 
+      font-family: 'VT323', monospace; 
+      letter-spacing: 1px;
+    }
+    body {
+      background: #08031a;
+      color: #ffffff;
+      margin: 0;
+      padding: 20px;
+      min-height: 100vh;
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      justify-content: center;
+      overflow: hidden;
+      position: relative;
+    }
 
-    .votos-container { display: grid; grid-template-columns: repeat(4, 1fr); gap: 15px; margin: 20px 0; }
-    .voto-box { background: #0b0f19; padding: 18px; border-radius: 16px; border: 2px solid #2a3855; }
-    .voto-box h3 { margin: 0; font-size: 1.8rem; color: #94a3b8; }
-    .voto-count { font-size: 2.8rem; font-weight: bold; color: #fb7185; margin-top: 5px; }
+    /* CANVAS DA GALÁXIA ANIMADA NO FUNDO */
+    #space-canvas {
+      position: absolute;
+      top: 0;
+      left: 0;
+      width: 100%;
+      height: 100%;
+      z-index: 1;
+      image-rendering: pixelated;
+    }
 
-    /* CARD DE REVELAÇÃO DA CIENTISTA */
-    .cientista-full-card { background: linear-gradient(135deg, #1e1b4b, #311b92); border: 3px solid #fb7185; border-radius: 24px; padding: 30px; text-align: left; box-shadow: 0 20px 40px rgba(0,0,0,0.6); }
-    .resposta-box { background: rgba(16, 185, 129, 0.15); border-left: 6px solid #10b981; padding: 15px 20px; border-radius: 12px; font-size: 1.2rem; margin-bottom: 20px; }
-    .cientista-layout { display: flex; gap: 30px; align-items: center; }
-    .cientista-img { width: 230px; height: 290px; object-fit: cover; border-radius: 18px; border: 4px solid #fb7185; box-shadow: 0 10px 25px rgba(0,0,0,0.5); }
-    .cientista-info { flex: 1; }
-    .cientista-info h3 { color: #fb7185; font-size: 2.3rem; margin: 0 0 10px 0; }
-    .cientista-info p { font-size: 1.15rem; line-height: 1.5; margin: 8px 0; color: #e2e8f0; }
+    /* CAIXA RETRO SOBREPOSTA AO FUNDO */
+    .retro-box {
+      background: rgba(26, 12, 64, 0.92);
+      border: 4px solid #38bdf8;
+      box-shadow: 0 0 35px rgba(56, 189, 248, 0.3), 8px 8px 0px #000000;
+      padding: 40px;
+      max-width: 800px;
+      width: 100%;
+      text-align: center;
+      border-radius: 8px;
+      position: relative;
+      z-index: 2;
+    }
 
-    /* PODIO DE PREMIAÇÃO */
-    .podio-container { display: flex; justify-content: center; align-items: flex-end; gap: 20px; margin: 30px 0; }
-    .podio-degrau { width: 180px; border-radius: 16px 16px 0 0; display: flex; flex-direction: column; align-items: center; justify-content: flex-end; padding: 15px; color: white; font-weight: bold; }
-    .podio-1 { height: 200px; background: linear-gradient(to top, #d97706, #f59e0b); border: 3px solid #fbbf24; }
-    .podio-2 { height: 160px; background: linear-gradient(to top, #475569, #94a3b8); border: 3px solid #cbd5e1; }
-    .podio-3 { height: 130px; background: linear-gradient(to top, #78350f, #b45309); border: 3px solid #d97706; }
-    .podio-nome { font-size: 1.3rem; margin-bottom: 8px; text-shadow: 0 2px 4px rgba(0,0,0,0.5); word-break: break-word; }
-    .podio-pontos { font-size: 1rem; opacity: 0.9; }
+    h1 {
+      color: #facc15;
+      font-size: 3.8rem;
+      margin: 0 0 20px 0;
+      text-transform: uppercase;
+      text-shadow: 3px 3px #000000;
+    }
 
-    /* MURAL DE SONHOS DA TURMA */
-    .mural-grid { display: grid; grid-template-columns: repeat(auto-fill, minmax(260px, 1fr)); gap: 15px; margin-top: 20px; text-align: left; }
-    .card-sonho { background: #0b0f19; border: 2px solid #8b5cf6; border-radius: 16px; padding: 15px; box-shadow: 0 4px 15px rgba(139,92,246,0.2); }
-    .card-sonho strong { color: #c084fc; font-size: 1.1rem; display: block; margin-bottom: 5px; }
+    h2 {
+      color: #38bdf8;
+      font-size: 2.2rem;
+      text-shadow: 2px 2px #000;
+      line-height: 1.4;
+      margin: 10px 0;
+    }
 
-    .hidden { display: none; }
+    /* QUADRO DE INFORMAÇÕES CENTRADO */
+    .info-box {
+      background: rgba(13, 6, 40, 0.85);
+      border: 3px dashed #facc15;
+      padding: 25px;
+      margin: 30px 0;
+    }
+
+    .info-box p {
+      margin: 8px 0;
+      line-height: 1.5;
+    }
+
+    /* BOTÃO LIMPO COM NOME EXATO */
+    .btn-pixel {
+      background: #22c55e;
+      color: #ffffff;
+      border: 3px solid #ffffff;
+      box-shadow: 5px 5px 0px #000000;
+      padding: 16px 40px;
+      font-size: 2.2rem;
+      cursor: pointer;
+      margin-top: 10px;
+      transition: all 0.1s;
+      text-transform: uppercase;
+    }
+    .btn-pixel:hover {
+      background: #16a34a;
+      transform: translate(-2px, -2px);
+      box-shadow: 7px 7px 0px #000000;
+    }
+    .btn-pixel:active {
+      transform: translate(2px, 2px);
+      box-shadow: 2px 2px 0px #000000;
+    }
+
+    .btn-yellow { background: #eab308; color: #000; }
+
+    /* IMAGEM DA CIENTISTA */
+    .cientista-img {
+      width: 240px;
+      height: 240px;
+      object-fit: cover;
+      border: 4px solid #38bdf8;
+      box-shadow: 6px 6px 0px #000;
+      margin: 15px 0;
+    }
+
+    /* MURAL DE SONHOS EM GRID */
+    .mural-grid {
+      display: grid;
+      grid-template-columns: repeat(auto-fill, minmax(240px, 1fr));
+      gap: 15px;
+      margin-top: 20px;
+      max-height: 350px;
+      overflow-y: auto;
+    }
+    .card-sonho {
+      background: #0d0628;
+      border: 2px solid #38bdf8;
+      padding: 15px;
+      font-size: 1.3rem;
+      line-height: 1.4;
+      color: #fef08a;
+      box-shadow: 4px 4px 0px #000;
+      text-align: left;
+    }
+
+    /* PÓDIO VINTAGE */
+    .podium-box {
+      background: #0d0628;
+      border: 2px solid #facc15;
+      padding: 15px;
+      margin: 10px 0;
+      box-shadow: 4px 4px 0px #000;
+      font-size: 1.6rem;
+    }
+
+    .hidden { display: none !important; }
   </style>
 </head>
 <body>
 
-  <div class="container">
-    <div class="header">
-      <h2 style="margin:0; font-size: 1.5rem;">🚀 Cientistas do Futuro (INPE)</h2>
-      <div class="status-badge">👥 <span id="total-jogadores">0</span> crianças conectadas</div>
-    </div>
+  <!-- ELEMENTO VISUAL DO ESPAÇO RETRO ANIMADO -->
+  <canvas id="space-canvas"></canvas>
 
-    <!-- TELA INICIAL -->
-    <div id="painel-inicio" class="card-projetor">
-      <h1>Bem-vindos à Oficina de TI!</h1>
-      <p style="font-size: 1.4rem; color: #cbd5e1;">Escaneiem o QR Code no celular para entrar no jogo!</p>
-      <button class="btn-control btn-green" onclick="iniciarProximaPergunta()">▶️ Começar Quiz / Próxima Pergunta</button>
-    </div>
+  <div class="retro-box">
 
-    <!-- TELA DA PERGUNTA -->
-    <div id="painel-pergunta" class="card-projetor hidden">
-      <h3 style="color: #fb7185; margin:0;">Pergunta <span id="num-pergunta">1</span> / <span id="total-perguntas">8</span></h3>
-      <h2 id="texto-pergunta">Carregando pergunta...</h2>
-
-      <div class="opcoes-lista">
-        <p><strong>A)</strong> <span id="txt-opt-A"></span></p>
-        <p><strong>B)</strong> <span id="txt-opt-B"></span></p>
-        <p><strong>C)</strong> <span id="txt-opt-C"></span></p>
-        <p><strong>D)</strong> <span id="txt-opt-D"></span></p>
-      </div>
-
-      <div class="votos-container">
-        <div class="voto-box"><h3>A</h3><div id="voto-A" class="voto-count">0</div></div>
-        <div class="voto-box"><h3>B</h3><div id="voto-B" class="voto-count">0</div></div>
-        <div class="voto-box"><h3>C</h3><div id="voto-C" class="voto-count">0</div></div>
-        <div class="voto-box"><h3>D</h3><div id="voto-D" class="voto-count">0</div></div>
-      </div>
-
-      <button class="btn-control" onclick="revelarResposta()">💡 Revelar Resposta & Cientista</button>
-    </div>
-
-    <!-- TELA ÚNICA DA CIENTISTA -->
-    <div id="card-cientista-box" class="cientista-full-card hidden">
-      <div class="resposta-box">
-        <strong style="color: #34d399;">✅ RESPOSTA CERTA: <span id="letra-correta"></span></strong>
-        <p id="explicacao-resposta" style="margin: 5px 0 0 0; color: #f1f5f9;"></p>
-      </div>
-
-      <div class="cientista-layout">
-        <img id="foto-cientista" src="" alt="Foto Cientista" class="cientista-img">
-        <div class="cientista-info">
-          <h3 id="nome-cientista">Nome da Cientista</h3>
-          <p><strong>👑 Cargo/Área:</strong> <span id="cargo-cientista"></span></p>
-          <p><strong>🏆 Grande Conquista:</strong> <span id="conquista-cientista"></span></p>
-          <p><strong>📖 História de Inspiração:</strong> <span id="historia-cientista"></span></p>
-        </div>
-      </div>
-
-      <div style="text-align: center; margin-top: 25px;">
-        <button class="btn-control btn-green" onclick="iniciarProximaPergunta()">➡️ Próxima Etapa</button>
-      </div>
-    </div>
-
-    <!-- TELA FINAL: PÓDIO E MURAL DE SONHOS DA TURMA -->
-    <div id="painel-final" class="card-projetor hidden">
-      <h1>🏆 Pódio de Destaque do Quiz</h1>
-      <p style="color: #cbd5e1; font-size: 1.2rem;">Parabéns a todos os pequenos cientistas pelo conhecimento demonstrado!</p>
-
-      <div class="podio-container">
-        <!-- 2º Lugar -->
-        <div class="podio-degrau podio-2">
-          <div class="podio-nome" id="podio-2-nome">-</div>
-          <div class="podio-pontos" id="podio-2-pts">0 pts</div>
-          <div style="font-size: 2.2rem; margin-top: 10px;">🥈</div>
-        </div>
-        <!-- 1º Lugar -->
-        <div class="podio-degrau podio-1">
-          <div class="podio-nome" id="podio-1-nome">-</div>
-          <div class="podio-pontos" id="podio-1-pts">0 pts</div>
-          <div style="font-size: 2.8rem; margin-top: 10px;">👑</div>
-        </div>
-        <!-- 3º Lugar -->
-        <div class="podio-degrau podio-3">
-          <div class="podio-nome" id="podio-3-nome">-</div>
-          <div class="podio-pontos" id="podio-3-pts">0 pts</div>
-          <div style="font-size: 2.2rem; margin-top: 10px;">🥉</div>
-        </div>
-      </div>
-
-      <hr style="border-color: #2a3855; margin: 30px 0;">
-
-      <h2 style="color: #c084fc;">✨ Mural de Sonhos do Futuro ✨</h2>
-      <p style="color: #cbd5e1;">O que nossa turma quer criar com a tecnologia quando crescer:</p>
+    <!-- TELA INICIAL DO PROJETOR -->
+    <div id="p-tela-espera">
+      <h1>Cientistas do Futuro</h1>
       
-      <div id="mural-sonhos" class="mural-grid">
-        <!-- Cards de sonhos sobem ao vivo aqui -->
+      <div class="info-box">
+        <p style="font-size: 2.2rem; color: #38bdf8;">
+          Jogadores conectados: <span id="contador-jogadores" style="color: #22c55e;"></span>
+        </p>
+        <p style="font-size: 1.6rem; color: #fef08a;">
+          Aponte a câmera para o QR Code para entrar no jogo
+        </p>
       </div>
+
+      <button class="btn-pixel" onclick="iniciarJogo()">Iniciar Quiz</button>
+    </div>
+
+    <!-- TELA DE PERGUNTA NO TELÃO -->
+    <div id="p-tela-pergunta" class="hidden">
+      <h2 id="p-numero-pergunta">PERGUNTA 1/8</h2>
+      <p id="p-texto-pergunta" style="font-size: 1.8rem; color: #fef08a; margin: 20px 0; line-height: 1.5;"></p>
+
+      <div style="text-align: center;">
+        <img id="p-img-cientista" class="cientista-img" src="" alt="Cientista">
+        <p id="p-nome-cientista" style="font-size: 1.5rem; color: #f472b6; margin-top: 5px;"></p>
+      </div>
+
+      <div style="margin-top: 25px;">
+        <button class="btn-pixel btn-yellow" onclick="revelarResposta()">Revelar Resposta</button>
+        <button class="btn-pixel" onclick="proximaPergunta()">Próxima</button>
+      </div>
+
+      <div id="box-resposta-certa" class="hidden" style="margin-top: 20px; background: #14532d; border: 3px solid #22c55e; padding: 15px;">
+        <p style="font-size: 1.6rem; color: #86efac; margin: 0;">
+          CORRETA: <span id="p-resposta-correta"></span>
+        </p>
+      </div>
+    </div>
+
+    <!-- TELA FINAL: MURAL DE SONHOS E PÓDIO -->
+    <div id="p-tela-final" class="hidden">
+      <h1>Mural e Pódio Final</h1>
+
+      <h2>Ranking dos Cientistas</h2>
+      <div id="podio-container"></div>
+
+      <h2 style="margin-top: 30px; color: #f472b6;">Mural do Futuro</h2>
+      <div id="mural-container" class="mural-grid"></div>
     </div>
   </div>
 
   <script src="/socket.io/socket.io.js"></script>
   <script>
+    // --- LÓGICA DA GALÁXIA ESPACIAL COM PLANETAS E CONSTELAÇÕES ---
+    const canvas = document.getElementById('space-canvas');
+    const ctx = canvas.getContext('2d');
+
+    function resizeCanvas() {
+      canvas.width = window.innerWidth;
+      canvas.height = window.innerHeight;
+    }
+    window.addEventListener('resize', resizeCanvas);
+    resizeCanvas();
+
+    // 1. Campo de Estrelas 3D Retro
+    const stars = [];
+    const numStars = 200;
+    for (let i = 0; i < numStars; i++) {
+      stars.push({
+        x: (Math.random() - 0.5) * canvas.width * 2,
+        y: (Math.random() - 0.5) * canvas.height * 2,
+        z: Math.random() * canvas.width,
+        color: ['#ffffff', '#38bdf8', '#fef08a', '#f472b6', '#a855f7'][Math.floor(Math.random() * 5)]
+      });
+    }
+
+    // 2. Constelações Pixel Art (Pontos interligados por linhas)
+    const constellations = [
+      {
+        z: 700,
+        xOffset: -0.3,
+        yOffset: -0.2,
+        stars: [
+          {x: 0, y: 0}, {x: 40, y: -20}, {x: 80, y: 10}, {x: 120, y: -10}, {x: 60, y: -50}
+        ],
+        lines: [[0,1], [1,2], [2,3], [1,4]]
+      },
+      {
+        z: 900,
+        xOffset: 0.25,
+        yOffset: 0.2,
+        stars: [
+          {x: 0, y: 0}, {x: -30, y: 40}, {x: 20, y: 70}, {x: 50, y: 30}
+        ],
+        lines: [[0,1], [1,2], [2,3], [3,0]]
+      }
+    ];
+
+    // 3. Planetas Coloridos Variados
+    const celestialObjects = [
+      { type: 'ringed', baseRadius: 28, color: '#38bdf8', ringColor: '#4ade80', z: 250, xOffset: -0.35, yOffset: 0.25 },
+      { type: 'craters', baseRadius: 38, color: '#f97316', craterColor: '#c2410c', z: 550, xOffset: 0.38, yOffset: -0.2 },
+      { type: 'striped', baseRadius: 48, color: '#e879f9', stripeColor: '#a855f7', z: 950, xOffset: -0.25, yOffset: -0.3 },
+      { type: 'small', baseRadius: 16, color: '#34d399', z: 350, xOffset: 0.3, yOffset: 0.35 },
+      { type: 'sun', baseRadius: 32, color: '#facc15', glowColor: '#f43f5e', z: 750, xOffset: -0.4, yOffset: -0.1 }
+    ];
+
+    function drawSpace() {
+      // Fundo Espacial Noturno
+      ctx.fillStyle = '#060214';
+      ctx.fillRect(0, 0, canvas.width, canvas.height);
+
+      const cx = canvas.width / 2;
+      const cy = canvas.height / 2;
+
+      // --- Desenhar Estrelas de Fundo ---
+      stars.forEach(star => {
+        star.z -= 2.5;
+        if (star.z <= 0) {
+          star.z = canvas.width;
+          star.x = (Math.random() - 0.5) * canvas.width * 2;
+          star.y = (Math.random() - 0.5) * canvas.height * 2;
+        }
+
+        const k = 256 / star.z;
+        const px = star.x * k + cx;
+        const py = star.y * k + cy;
+
+        if (px >= 0 && px <= canvas.width && py >= 0 && py <= canvas.height) {
+          const size = Math.max(1, Math.floor((1 - star.z / canvas.width) * 4));
+          ctx.fillStyle = star.color;
+          ctx.fillRect(Math.floor(px), Math.floor(py), size, size);
+        }
+      });
+
+      // --- Desenhar Constelações ---
+      constellations.forEach(c => {
+        c.z -= 1.2;
+        if (c.z <= 10) c.z = 1100;
+
+        const scale = 300 / c.z;
+        const baseX = cx + (canvas.width * c.xOffset) * scale;
+        const baseY = cy + (canvas.height * c.yOffset) * scale;
+
+        // Desenhar Linhas da Constelação
+        ctx.strokeStyle = 'rgba(56, 189, 248, 0.4)';
+        ctx.lineWidth = Math.max(1, 2 * scale);
+        c.lines.forEach(([i, j]) => {
+          const p1 = { x: baseX + c.stars[i].x * scale, y: baseY + c.stars[i].y * scale };
+          const p2 = { x: baseX + c.stars[j].x * scale, y: baseY + c.stars[j].y * scale };
+          ctx.beginPath();
+          ctx.moveTo(p1.x, p1.y);
+          ctx.lineTo(p2.x, p2.y);
+          ctx.stroke();
+        });
+
+        // Desenhar Estrelas da Constelação
+        c.stars.forEach(s => {
+          const sx = baseX + s.x * scale;
+          const sy = baseY + s.y * scale;
+          ctx.fillStyle = '#fef08a';
+          ctx.fillRect(Math.floor(sx - 2), Math.floor(sy - 2), Math.max(3, 5 * scale), Math.max(3, 5 * scale));
+        });
+      });
+
+      // --- Desenhar Planetas ---
+      celestialObjects.forEach(obj => {
+        obj.z -= 1.2;
+        if (obj.z <= 10) obj.z = 1200;
+
+        const scale = 300 / obj.z;
+        const px = cx + (canvas.width * obj.xOffset) * scale;
+        const py = cy + (canvas.height * obj.yOffset) * scale;
+        const radius = Math.max(4, obj.baseRadius * scale);
+
+        if (px + radius > 0 && px - radius < canvas.width && py + radius > 0 && py - radius < canvas.height) {
+          ctx.save();
+          ctx.translate(px, py);
+
+          if (obj.type === 'ringed') {
+            ctx.fillStyle = obj.color;
+            ctx.beginPath();
+            ctx.arc(0, 0, radius, 0, Math.PI * 2);
+            ctx.fill();
+
+            ctx.strokeStyle = obj.ringColor;
+            ctx.lineWidth = Math.max(2, radius * 0.15);
+            ctx.beginPath();
+            ctx.ellipse(0, 0, radius * 1.7, radius * 0.45, Math.PI / 6, 0, Math.PI * 2);
+            ctx.stroke();
+
+          } else if (obj.type === 'craters') {
+            ctx.fillStyle = obj.color;
+            ctx.beginPath();
+            ctx.arc(0, 0, radius, 0, Math.PI * 2);
+            ctx.fill();
+
+            ctx.fillStyle = obj.craterColor;
+            ctx.beginPath();
+            ctx.arc(-radius * 0.3, -radius * 0.2, radius * 0.25, 0, Math.PI * 2);
+            ctx.arc(radius * 0.2, radius * 0.3, radius * 0.2, 0, Math.PI * 2);
+            ctx.fill();
+
+          } else if (obj.type === 'striped') {
+            ctx.fillStyle = obj.color;
+            ctx.beginPath();
+            ctx.arc(0, 0, radius, 0, Math.PI * 2);
+            ctx.fill();
+
+            ctx.fillStyle = obj.stripeColor;
+            ctx.fillRect(-radius * 0.8, -radius * 0.3, radius * 1.6, radius * 0.25);
+            ctx.fillRect(-radius * 0.9, radius * 0.1, radius * 1.8, radius * 0.2);
+
+          } else if (obj.type === 'sun') {
+            ctx.fillStyle = obj.glowColor;
+            ctx.beginPath();
+            ctx.arc(0, 0, radius * 1.3, 0, Math.PI * 2);
+            ctx.fill();
+
+            ctx.fillStyle = obj.color;
+            ctx.beginPath();
+            ctx.arc(0, 0, radius, 0, Math.PI * 2);
+            ctx.fill();
+
+          } else {
+            ctx.fillStyle = obj.color;
+            ctx.beginPath();
+            ctx.arc(0, 0, radius, 0, Math.PI * 2);
+            ctx.fill();
+          }
+
+          ctx.restore();
+        }
+      });
+
+      requestAnimationFrame(drawSpace);
+    }
+
+    drawSpace();
+
+    // --- LÓGICA SOCKET.IO ---
     const socket = io();
+    let perguntaAtual = 0;
+    const totalPerguntas = 8;
 
     socket.on('atualizar_jogadores', (data) => {
-      document.getElementById('total-jogadores').innerText = data.total;
+      let total = (typeof data === 'object' && data !== null) 
+        ? (data.qtd !== undefined ? data.qtd : (data.total || Object.keys(data).length)) 
+        : data;
+
+      const elementoContador = document.getElementById('contador-jogadores');
+      
+      if (total && total > 0) {
+        elementoContador.innerText = total;
+      } else {
+        elementoContador.innerText = "";
+      }
     });
 
-    socket.on('nova_pergunta', (data) => {
-      document.getElementById('painel-inicio').classList.add('hidden');
-      document.getElementById('card-cientista-box').classList.add('hidden');
-      document.getElementById('painel-final').classList.add('hidden');
-      document.getElementById('painel-pergunta').classList.remove('hidden');
+    function iniciarJogo() {
+      perguntaAtual = 1;
+      carregarPergunta(perguntaAtual);
+      document.getElementById('p-tela-espera').classList.add('hidden');
+      document.getElementById('p-tela-pergunta').classList.remove('hidden');
+    }
 
-      document.getElementById('num-pergunta').innerText = data.numero;
-      document.getElementById('total-perguntas').innerText = data.totalPerguntas;
-      document.getElementById('texto-pergunta').innerText = data.perguntaTexto;
+    function carregarPergunta(num) {
+      document.getElementById('box-resposta-certa').classList.add('hidden');
+      socket.emit('solicitar_pergunta', num);
+    }
 
-      document.getElementById('txt-opt-A').innerText = data.opcoes.A;
-      document.getElementById('txt-opt-B').innerText = data.opcoes.B;
-      document.getElementById('txt-opt-C').innerText = data.opcoes.C;
-      document.getElementById('txt-opt-D').innerText = data.opcoes.D;
-
-      document.getElementById('voto-A').innerText = '0';
-      document.getElementById('voto-B').innerText = '0';
-      document.getElementById('voto-C').innerText = '0';
-      document.getElementById('voto-D').innerText = '0';
+    socket.on('dados_pergunta', (dados) => {
+      document.getElementById('p-numero-pergunta').innerText = `PERGUNTA ${dados.numero}/${totalPerguntas}`;
+      document.getElementById('p-texto-pergunta').innerText = dados.pergunta;
+      document.getElementById('p-img-cientista').src = dados.imagem;
+      document.getElementById('p-nome-cientista').innerText = `Cientista: ${dados.cientista}`;
+      document.getElementById('p-resposta-correta').innerText = `${dados.correta}) ${dados.opcoes[dados.correta]}`;
     });
 
-    socket.on('atualizar_votos', (votos) => {
-      document.getElementById('voto-A').innerText = votos.A || 0;
-      document.getElementById('voto-B').innerText = votos.B || 0;
-      document.getElementById('voto-C').innerText = votos.C || 0;
-      document.getElementById('voto-D').innerText = votos.D || 0;
+    function revelarResposta() {
+      document.getElementById('box-resposta-certa').classList.remove('hidden');
+    }
+
+    function proximaPergunta() {
+      if (perguntaAtual < totalPerguntas) {
+        perguntaAtual++;
+        carregarPergunta(perguntaAtual);
+      } else {
+        socket.emit('encerrar_quiz');
+        document.getElementById('p-tela-pergunta').classList.add('hidden');
+        document.getElementById('p-tela-final').classList.remove('hidden');
+      }
+    }
+
+    socket.on('mural_atualizado', (sonhos) => {
+      const container = document.getElementById('mural-container');
+      container.innerHTML = "";
+      sonhos.forEach(s => {
+        const card = document.createElement('div');
+        card.className = 'card-sonho';
+        card.innerHTML = `<strong>${s.nome}:</strong><br>"${s.sonho}"`;
+        container.appendChild(card);
+      });
     });
 
-    socket.on('resposta_revelada', (data) => {
-      document.getElementById('painel-pergunta').classList.add('hidden');
-      document.getElementById('card-cientista-box').classList.remove('hidden');
-
-      document.getElementById('letra-correta').innerText = data.correta;
-      document.getElementById('explicacao-resposta').innerText = data.explicacao;
-
-      document.getElementById('foto-cientista').src = data.cientista.foto;
-      document.getElementById('nome-cientista').innerText = "⭐ " + data.cientista.nome;
-      document.getElementById('cargo-cientista').innerText = data.cientista.cargo;
-      document.getElementById('conquista-cientista').innerText = data.cientista.conquista;
-      document.getElementById('historia-cientista').innerText = data.cientista.historia;
+    socket.on('podio_final', (podio) => {
+      const container = document.getElementById('podio-container');
+      container.innerHTML = "";
+      podio.forEach((p, idx) => {
+        const box = document.createElement('div');
+        box.className = 'podium-box';
+        const medalha = idx === 0 ? "1º" : idx === 1 ? "2º" : "3º";
+        box.innerHTML = `<span style="color: #facc15;">${medalha}</span> - ${p.nome} (${p.pontos} pts)`;
+        container.appendChild(box);
+      });
     });
-
-    // Abertura do Pódio e do Mural de Sonhos
-    socket.on('abrir_mural_ranking', (data) => {
-      document.getElementById('painel-inicio').classList.add('hidden');
-      document.getElementById('painel-pergunta').classList.add('hidden');
-      document.getElementById('card-cientista-box').classList.add('hidden');
-      document.getElementById('painel-final').classList.remove('hidden');
-
-      // Preenche o Pódio (1º, 2º e 3º)
-      const r = data.ranking;
-      if (r[0]) { document.getElementById('podio-1-nome').innerText = r[0].apelido; document.getElementById('podio-1-pts').innerText = r[0].pontos + ' pts'; }
-      if (r[1]) { document.getElementById('podio-2-nome').innerText = r[1].apelido; document.getElementById('podio-2-pts').innerText = r[1].pontos + ' pts'; }
-      if (r[2]) { document.getElementById('podio-3-nome').innerText = r[2].apelido; document.getElementById('podio-3-pts').innerText = r[2].pontos + ' pts'; }
-    });
-
-    // Adiciona sonhos ao mural conforme as crianças enviam do celular
-    socket.on('novo_sonho_mural', (data) => {
-      const mural = document.getElementById('mural-sonhos');
-      const card = document.createElement('div');
-      card.className = 'card-sonho';
-      card.innerHTML = `<strong>🌟 ${data.apelido}:</strong><p style="margin:0; color:#f1f5f9;">"${data.sonho}"</p>`;
-      mural.appendChild(card);
-    });
-
-    function iniciarProximaPergunta() { socket.emit('admin_proxima_pergunta'); }
-    function revelarResposta() { socket.emit('admin_revelar_resposta'); }
   </script>
 </body>
 </html>
