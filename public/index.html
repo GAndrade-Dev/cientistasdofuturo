@@ -6,123 +6,44 @@
   <title>Cientistas do Futuro</title>
   <link href="https://fonts.googleapis.com/css2?family=VT323&display=swap" rel="stylesheet">
   <style>
-    * { 
-      box-sizing: border-box; 
-      font-family: 'VT323', monospace; 
-      letter-spacing: 1px;
-    }
+    * { box-sizing: border-box; font-family: 'VT323', monospace; letter-spacing: 1px; }
     body {
-      background: #060214;
-      color: #ffffff;
-      margin: 0;
-      padding: 15px;
-      min-height: 100vh;
-      display: flex;
-      flex-direction: column;
-      align-items: center;
-      justify-content: center;
-      overflow: hidden;
-      position: relative;
+      background: #060214; color: #ffffff; margin: 0; padding: 15px;
+      min-height: 100vh; display: flex; flex-direction: column;
+      align-items: center; justify-content: center; overflow: hidden;
     }
-
-    #space-canvas {
-      position: fixed;
-      top: 0;
-      left: 0;
-      width: 100vw;
-      height: 100vh;
-      z-index: 0;
-      pointer-events: none;
-      image-rendering: pixelated;
-    }
-
+    #space-canvas { position: fixed; top: 0; left: 0; width: 100vw; height: 100vh; z-index: 0; pointer-events: none; }
+    
     .retro-box {
-      background: rgba(26, 12, 64, 0.92);
-      border: 3px solid #38bdf8;
-      box-shadow: 0 0 25px rgba(56, 189, 248, 0.3), 6px 6px 0px #000000;
-      padding: 25px 20px;
-      max-width: 480px;
-      width: 100%;
-      text-align: center;
-      border-radius: 8px;
-      position: relative;
-      z-index: 10;
+      background: rgba(26, 12, 64, 0.94); border: 3px solid #38bdf8;
+      box-shadow: 0 0 25px rgba(56, 189, 248, 0.3), 6px 6px 0px #000;
+      padding: 25px 20px; max-width: 480px; width: 100%; text-align: center;
+      border-radius: 8px; position: relative; z-index: 10;
     }
 
-    h1 {
-      color: #facc15;
-      font-size: 2.8rem;
-      margin: 0 0 15px 0;
-      text-transform: uppercase;
-      text-shadow: 2px 2px #000000;
-    }
-
-    h2 {
-      color: #38bdf8;
-      font-size: 2rem;
-      text-shadow: 2px 2px #000;
-      margin: 10px 0;
-      line-height: 1.3;
-    }
-
-    p {
-      font-size: 1.4rem;
-      line-height: 1.4;
-      color: #fef08a;
-      margin: 12px 0;
-    }
+    h1 { color: #facc15; font-size: 2.8rem; margin: 0 0 10px 0; text-transform: uppercase; text-shadow: 2px 2px #000; }
+    h2 { color: #38bdf8; font-size: 2rem; margin: 10px 0; }
 
     input[type="text"], textarea {
-      width: 100%;
-      background: #0d0628;
-      border: 2px solid #38bdf8;
-      color: #ffffff;
-      padding: 12px;
-      font-size: 1.5rem;
-      margin: 10px 0 20px 0;
-      outline: none;
-      box-shadow: inset 3px 3px 0px #000;
-      border-radius: 4px;
+      width: 100%; background: #0d0628; border: 2px solid #38bdf8; color: #fff;
+      padding: 12px; font-size: 1.5rem; margin: 10px 0 20px 0; outline: none;
+      box-shadow: inset 3px 3px 0px #000; border-radius: 4px;
     }
 
     .btn-pixel {
-      width: 100%;
-      background: #22c55e;
-      color: #ffffff;
-      border: 3px solid #ffffff;
-      box-shadow: 4px 4px 0px #000000;
-      padding: 14px;
-      font-size: 1.8rem;
-      cursor: pointer;
-      margin-top: 10px;
-      text-transform: uppercase;
+      width: 100%; background: #22c55e; color: #fff; border: 3px solid #fff;
+      box-shadow: 4px 4px 0px #000; padding: 14px; font-size: 1.8rem; cursor: pointer; text-transform: uppercase;
     }
 
-    .opcoes-grid {
-      display: flex;
-      flex-direction: column;
-      gap: 12px;
-      margin-top: 15px;
-    }
-
+    .opcoes-grid { display: grid; grid-template-columns: 1fr 1fr; gap: 15px; margin-top: 20px; }
     .btn-opcao {
-      background: #1a0c40;
-      border: 2px solid #38bdf8;
-      color: #ffffff;
-      padding: 12px 15px;
-      font-size: 1.4rem;
-      text-align: left;
-      cursor: pointer;
-      box-shadow: 4px 4px 0px #000000;
+      background: #1a0c40; border: 3px solid #38bdf8; color: #facc15;
+      padding: 20px 10px; font-size: 2.8rem; cursor: pointer; box-shadow: 4px 4px 0px #000;
     }
+    .btn-opcao.selecionado { background: #22c55e !important; color: #fff !important; border-color: #fff !important; }
+    .btn-opcao.desativado { opacity: 0.3; cursor: not-allowed; }
 
-    .info-card {
-      background: #0d0628;
-      border: 2px dashed #facc15;
-      padding: 20px;
-      margin: 15px 0;
-    }
-
+    .info-card { background: #0d0628; border: 2px dashed #facc15; padding: 20px; margin: 15px 0; }
     .hidden { display: none !important; }
   </style>
 </head>
@@ -135,46 +56,73 @@
     <!-- TELA 1: LOGIN -->
     <div id="c-tela-login">
       <h1>Cientistas do Futuro</h1>
-      <p style="color: #38bdf8;">Digite seu nome para entrar no jogo:</p>
-      
+      <p style="color: #38bdf8; font-size: 1.4rem;">Digite seu nome para entrar:</p>
       <input type="text" id="nome-jogador" placeholder="Seu nome aqui..." maxlength="20" autocomplete="off">
       <button type="button" id="btn-entrar" class="btn-pixel">Entrar no Jogo</button>
     </div>
 
-    <!-- TELA 2: AGUARDANDO PALESTRANTE -->
+    <!-- TELA 2: ESPERA -->
     <div id="c-tela-espera" class="hidden">
       <h2>Olá, <span id="boas-vindas-nome" style="color: #f472b6;"></span>!</h2>
       <div class="info-card">
-        <p style="font-size: 1.5rem; color: #38bdf8; margin: 0; line-height: 1.5;">
-          Aguarde a palestrante iniciar o Quiz
-        </p>
+        <p style="font-size: 1.6rem; color: #38bdf8; margin: 0;">Aguarde a palestrante iniciar o Quiz</p>
       </div>
     </div>
 
-    <!-- TELA 3: RESPONDER PERGUNTA -->
+    <!-- TELA 3: ESCOLHA SUA RESPOSTA -->
     <div id="c-tela-pergunta" class="hidden">
-      <h2 id="c-numero-pergunta" style="color: #facc15;">PERGUNTA</h2>
-      <p id="c-texto-pergunta" style="font-size: 1.5rem; text-align: left;"></p>
-      <div id="c-opcoes-container" class="opcoes-grid"></div>
-    </div>
-
-    <!-- TELA 4: CONFIRMAÇÃO DE RESPOSTA -->
-    <div id="c-tela-confirmacao" class="hidden">
-      <h2>Resposta Enviada! 🚀</h2>
-      <div class="info-card">
-        <p style="color: #fef08a;">Você escolheu a opção <span id="opcao-escolhida" style="color: #38bdf8; font-weight: bold;"></span></p>
-        <p style="font-size: 1.2rem; color: #94a3b8; margin-top: 10px;">Aguarde a revelação do resultado no telão!</p>
+      <h2 id="c-numero-pergunta" style="color: #facc15;">PERGUNTA 1/8</h2>
+      <p style="font-size: 1.6rem; color: #38bdf8; margin: 10px 0;">Escolha sua resposta:</p>
+      <div class="opcoes-grid">
+        <button class="btn-opcao" onclick="responder('a')">A</button>
+        <button class="btn-opcao" onclick="responder('b')">B</button>
+        <button class="btn-opcao" onclick="responder('c')">C</button>
+        <button class="btn-opcao" onclick="responder('d')">D</button>
       </div>
     </div>
 
-    <!-- TELA 5: MURAL DO FUTURO -->
+    <!-- TELA 4: CONFIRMAÇÃO DE VOTO -->
+    <div id="c-tela-confirmacao" class="hidden">
+      <h2>Resposta Registrada!</h2>
+      <div class="info-card">
+        <p style="font-size: 1.5rem; color: #fef08a;">Sua escolha: <span id="opcao-escolhida" style="color: #22c55e; font-size: 2rem;"></span></p>
+        <p style="font-size: 1.3rem; color: #38bdf8; margin-top: 10px;">confira o gabarito no projetor</p>
+      </div>
+    </div>
+
+    <!-- TELA 5: MURAL DOS SONHOS -->
     <div id="c-tela-mural" class="hidden">
-      <h1>Mural do Futuro</h1>
-      <p style="color: #38bdf8;">Qual é o seu maior sonho para o futuro?</p>
-      <textarea id="texto-sonho" rows="3" placeholder="Ex: Quero ser astronauta..."></textarea>
-      <button type="button" id="btn-enviar-sonho" class="btn-pixel">Enviar Meu Sonho</button>
-      <div id="msg-sonho-enviado" class="hidden info-card" style="margin-top: 15px;">
-        <p style="color: #86efac; margin: 0;">✨ Sonho enviado com sucesso! Olhe para o telão!</p>
+      <h1 style="font-size: 2.2rem; color: #facc15;">Mural dos Sonhos</h1>
+      <p style="color: #38bdf8; font-size: 1.3rem;">Qual ideia incrível você gostaria de criar com a tecnologia no futuro?</p>
+      
+      <textarea id="texto-sonho" rows="3" placeholder="Ex: Quero criar um robô para limpar os oceanos..."></textarea>
+      
+      <button id="btn-enviar-sonho" class="btn-pixel" onclick="enviarSonho()">Enviar para o Mural</button>
+
+      <div id="msg-sonho-enviado" class="hidden info-card" style="margin-top: 15px; border-color: #22c55e;">
+        <p style="color: #86efac; font-size: 1.5rem; margin: 0;">Sonho Enviado!</p>
+        <p style="color: #38bdf8; font-size: 1.2rem; margin-top: 5px;">Olhe no telão o seu sonho aparecendo!</p>
+      </div>
+    </div>
+
+    <!-- TELA 6: TERMINAL DE CÓDIGO INDIVIDUAL NO TELEMÓVEL -->
+    <div id="c-tela-codigo" class="hidden">
+      <h1 style="font-size: 2.2rem; color: #facc15;">Seu Primeiro Código</h1>
+      <p style="color: #38bdf8; font-size: 1.2rem; margin-bottom: 8px;">Escreva o comando abaixo no campo de texto:</p>
+
+      <div style="background: #0d0628; border: 1px dashed #facc15; padding: 8px; margin-bottom: 12px; font-size: 1.2rem; color: #fef08a;">
+        Instrução: digite <strong style="color: #f472b6;">print("Olá, futuro Cientista!")</strong>
+      </div>
+
+      <input type="text" id="campo-codigo-manual" placeholder='print("Olá, futuro Cientista!")' style="font-family: monospace; font-size: 1.1rem;">
+
+      <button id="btn-executar-codigo" class="btn-pixel" onclick="executarCodigoNoCelular()">EXECUTAR CÓDIGO</button>
+
+      <!-- TERMINAL DE SAÍDA NO PRÓPRIO TELEMÓVEL -->
+      <div id="terminal-saida-celular" class="hidden" style="background: #000; border: 2px solid #22c55e; padding: 15px; margin-top: 15px; text-align: left; font-family: monospace; box-shadow: inset 0 0 10px rgba(34, 197, 94, 0.3);">
+        <p style="color: #86efac; margin: 0 0 5px 0; font-size: 1.1rem;">> Executando script...</p>
+        <p id="linha-resultado-codigo" style="color: #38bdf8; font-size: 1.3rem; margin: 5px 0; font-weight: bold;"></p>
+        <p style="color: #facc15; margin: 10px 0 0 0; font-size: 1.1rem;">Parabéns! Você acabou de rodar sua primeira linha de código!</p>
       </div>
     </div>
 
@@ -182,167 +130,133 @@
 
   <script src="/socket.io/socket.io.js"></script>
   <script>
-    // --- LÓGICA DA GALÁXIA ---
     const canvas = document.getElementById('space-canvas');
     const ctx = canvas.getContext('2d');
+    function resizeCanvas() { canvas.width = window.innerWidth; canvas.height = window.innerHeight; }
+    window.addEventListener('resize', resizeCanvas); resizeCanvas();
 
-    function resizeCanvas() {
-      canvas.width = window.innerWidth || document.documentElement.clientWidth;
-      canvas.height = window.innerHeight || document.documentElement.clientHeight;
-    }
-    window.addEventListener('resize', resizeCanvas);
-    resizeCanvas();
-
-    const stars = [];
-    for (let i = 0; i < 140; i++) {
-      stars.push({
-        x: (Math.random() - 0.5) * canvas.width * 2,
-        y: (Math.random() - 0.5) * canvas.height * 2,
-        z: Math.random() * canvas.width,
-        color: ['#ffffff', '#38bdf8', '#fef08a', '#f472b6', '#a855f7'][Math.floor(Math.random() * 5)]
-      });
-    }
-
-    const celestialObjects = [
-      { type: 'ringed', baseRadius: 22, color: '#38bdf8', ringColor: '#4ade80', z: 180, xOffset: -0.32, yOffset: 0.32 },
-      { type: 'craters', baseRadius: 28, color: '#f97316', craterColor: '#c2410c', z: 450, xOffset: 0.32, yOffset: -0.25 }
-    ];
+    const stars = Array.from({length: 120}, () => ({
+      x: (Math.random() - 0.5) * canvas.width * 2, y: (Math.random() - 0.5) * canvas.height * 2,
+      z: Math.random() * canvas.width, color: ['#ffffff', '#38bdf8', '#fef08a', '#f472b6'][Math.floor(Math.random() * 4)]
+    }));
 
     function drawSpace() {
-      ctx.fillStyle = '#060214';
-      ctx.fillRect(0, 0, canvas.width, canvas.height);
-      const cx = canvas.width / 2;
-      const cy = canvas.height / 2;
-
+      ctx.fillStyle = '#060214'; ctx.fillRect(0, 0, canvas.width, canvas.height);
+      const cx = canvas.width / 2, cy = canvas.height / 2;
       stars.forEach(star => {
         star.z -= 2;
-        if (star.z <= 0) {
-          star.z = canvas.width;
-          star.x = (Math.random() - 0.5) * canvas.width * 2;
-          star.y = (Math.random() - 0.5) * canvas.height * 2;
-        }
-        const k = 256 / star.z;
-        const px = star.x * k + cx;
-        const py = star.y * k + cy;
-
+        if (star.z <= 0) { star.z = canvas.width; star.x = (Math.random() - 0.5) * canvas.width * 2; star.y = (Math.random() - 0.5) * canvas.height * 2; }
+        const k = 256 / star.z, px = star.x * k + cx, py = star.y * k + cy;
         if (px >= 0 && px <= canvas.width && py >= 0 && py <= canvas.height) {
-          const size = Math.max(1, Math.floor((1 - star.z / canvas.width) * 3));
-          ctx.fillStyle = star.color;
-          ctx.fillRect(Math.floor(px), Math.floor(py), size, size);
+          ctx.fillStyle = star.color; ctx.fillRect(Math.floor(px), Math.floor(py), 2, 2);
         }
       });
-
-      celestialObjects.forEach(obj => {
-        obj.z -= 1;
-        if (obj.z <= 10) obj.z = 950;
-        const scale = 250 / obj.z;
-        const px = cx + (canvas.width * obj.xOffset) * scale;
-        const py = cy + (canvas.height * obj.yOffset) * scale;
-        const radius = Math.max(4, obj.baseRadius * scale);
-
-        if (px + radius > 0 && px - radius < canvas.width && py + radius > 0 && py - radius < canvas.height) {
-          ctx.save();
-          ctx.translate(px, py);
-          ctx.fillStyle = obj.color;
-          ctx.beginPath();
-          ctx.arc(0, 0, radius, 0, Math.PI * 2);
-          ctx.fill();
-          ctx.restore();
-        }
-      });
-
       requestAnimationFrame(drawSpace);
     }
     drawSpace();
 
-    // --- LÓGICA DO SOCKET E CLIQUE DO BOTÃO ---
     const socket = io();
     let meuNome = "";
-    let perguntaAtualNum = 0;
+    let respostaDada = false;
 
-    const btnEntrar = document.getElementById('btn-entrar');
-    const inputNome = document.getElementById('nome-jogador');
-
-    btnEntrar.addEventListener('click', function() {
-      const nomeDigitado = inputNome.value.trim();
-
-      if (!nomeDigitado) {
-        alert("Por favor, digite seu nome!");
-        return;
-      }
-
-      meuNome = nomeDigitado;
-
-      // 1. Notifica o servidor Socket.io
-      if (socket) {
-        socket.emit('novo_jogador', meuNome);
-      }
-
-      // 2. Muda a tela obrigatoriamente
+    document.getElementById('btn-entrar').addEventListener('click', () => {
+      const nome = document.getElementById('nome-jogador').value.trim();
+      if (!nome) return alert("Digite seu nome!");
+      meuNome = nome;
+      socket.emit('novo_jogador', meuNome);
       document.getElementById('boas-vindas-nome').innerText = meuNome;
       document.getElementById('c-tela-login').classList.add('hidden');
       document.getElementById('c-tela-espera').classList.remove('hidden');
     });
 
     socket.on('receber_pergunta', (dados) => {
-      perguntaAtualNum = dados.numero;
-      document.getElementById('c-numero-pergunta').innerText = `PERGUNTA ${dados.numero}`;
-      document.getElementById('c-texto-pergunta').innerText = dados.pergunta;
-
-      const container = document.getElementById('c-opcoes-container');
-      container.innerHTML = "";
-
-      Object.keys(dados.opcoes).forEach(chave => {
-        const btn = document.createElement('button');
-        btn.className = 'btn-opcao';
-        btn.innerHTML = `<strong style="color: #facc15;">${chave.toUpperCase()})</strong> ${dados.opcoes[chave]}`;
-        btn.onclick = () => responder(chave);
-        container.appendChild(btn);
+      respostaDada = false;
+      document.getElementById('c-numero-pergunta').innerText = `PERGUNTA ${dados.numero}/${dados.totalPerguntas}`;
+      document.querySelectorAll('.btn-opcao').forEach(btn => {
+        btn.classList.remove('selecionado', 'desativado'); btn.disabled = false;
       });
 
-      document.getElementById('c-tela-login').classList.add('hidden');
       document.getElementById('c-tela-espera').classList.add('hidden');
       document.getElementById('c-tela-confirmacao').classList.add('hidden');
+      document.getElementById('c-tela-mural').classList.add('hidden');
+      document.getElementById('c-tela-codigo').classList.add('hidden');
       document.getElementById('c-tela-pergunta').classList.remove('hidden');
     });
 
-    function responder(opcaoChave) {
-      socket.emit('enviar_resposta', {
-        nome: meuNome,
-        numeroPergunta: perguntaAtualNum,
-        resposta: opcaoChave
+    function responder(letra) {
+      if (respostaDada) return;
+      respostaDada = true;
+      socket.emit('enviar_resposta', { nome: meuNome, resposta: letra });
+
+      document.querySelectorAll('.btn-opcao').forEach(btn => {
+        btn.disabled = true;
+        if (btn.innerText.toLowerCase() === letra) btn.classList.add('selecionado');
+        else btn.classList.add('desativado');
       });
 
-      document.getElementById('opcao-escolhida').innerText = opcaoChave.toUpperCase();
-      document.getElementById('c-tela-pergunta').classList.add('hidden');
-      document.getElementById('c-tela-confirmacao').classList.remove('hidden');
+      setTimeout(() => {
+        document.getElementById('opcao-escolhida').innerText = letra.toUpperCase();
+        document.getElementById('c-tela-pergunta').classList.add('hidden');
+        document.getElementById('c-tela-confirmacao').classList.remove('hidden');
+      }, 1200);
     }
 
-    socket.on('abrir_mural', () => {
+    socket.on('exibir_ranking_projetor', () => {
       document.getElementById('c-tela-login').classList.add('hidden');
       document.getElementById('c-tela-espera').classList.add('hidden');
       document.getElementById('c-tela-pergunta').classList.add('hidden');
       document.getElementById('c-tela-confirmacao').classList.add('hidden');
+      document.getElementById('c-tela-codigo').classList.add('hidden');
       document.getElementById('c-tela-mural').classList.remove('hidden');
     });
 
-    document.getElementById('btn-enviar-sonho').addEventListener('click', function() {
+    function enviarSonho() {
       const textarea = document.getElementById('texto-sonho');
       const sonho = textarea.value.trim();
 
-      if (!sonho) {
-        alert("Escreva seu sonho antes de enviar!");
-        return;
+      if (!sonho) return alert("Escreva seu sonho antes de enviar!");
+
+      const btnEnviar = document.getElementById('btn-enviar-sonho');
+      btnEnviar.disabled = true;
+
+      socket.emit('enviar_sonho', { nome: meuNome, sonho: sonho });
+
+      textarea.disabled = true;
+      btnEnviar.classList.add('hidden');
+      document.getElementById('msg-sonho-enviado').classList.remove('hidden');
+    }
+
+    socket.on('abrir_tela_codigo', () => {
+      document.getElementById('c-tela-login').classList.add('hidden');
+      document.getElementById('c-tela-espera').classList.add('hidden');
+      document.getElementById('c-tela-pergunta').classList.add('hidden');
+      document.getElementById('c-tela-confirmacao').classList.add('hidden');
+      document.getElementById('c-tela-mural').classList.add('hidden');
+      document.getElementById('c-tela-codigo').classList.remove('hidden');
+    });
+
+    function executarCodigoNoCelular() {
+      const input = document.getElementById('campo-codigo-manual').value.trim();
+
+      if (!input) {
+        return alert("Escreva o código antes de executar!");
       }
 
-      socket.emit('enviar_sonho', {
-        nome: meuNome,
-        sonho: sonho
-      });
+      // Valida se escreveu uma função print básica
+      if (!input.toLowerCase().startsWith('print')) {
+        return alert('Escreva o comando utilizando print("...")!');
+      }
 
-      document.getElementById('msg-sonho-enviado').classList.remove('hidden');
-      textarea.disabled = true;
-    });
+      const btn = document.getElementById('btn-executar-codigo');
+      btn.disabled = true;
+
+      // Extrai o texto dentro das aspas ou exibe mensagem com o nome do aluno
+      let conteudoExibicao = `Olá, futuro Cientista, ${meuNome}!`;
+      
+      document.getElementById('linha-resultado-codigo').innerText = `> Output: ${conteudoExibicao}`;
+      document.getElementById('terminal-saida-celular').classList.remove('hidden');
+      document.getElementById('campo-codigo-manual').disabled = true;
+    }
   </script>
 </body>
 </html>

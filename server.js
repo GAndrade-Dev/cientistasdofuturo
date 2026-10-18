@@ -1,288 +1,238 @@
 const express = require('express');
+const http = require('http');
+const { Server } = require('socket.io');
+
 const app = express();
-const http = require('http').createServer(app);
-const io = require('socket.io')(http);
+const server = http.createServer(app);
+const io = new Server(server);
 
 app.use(express.static('public'));
 
-// BANCO DE DADOS EXPANDIDO (8 PERGUNTAS COM PROTAGONISMO FEMININO)
-const quizData = [
+// ESTRUTURA COMPLETA DAS 8 PERGUNTAS E REVELAÇÕES
+const perguntas = [
   {
-    id: 1,
-    pergunta: "Quando a família usa o GPS para ir à praia ou ao shopping, como o celular sabe exatamente onde a gente está?",
+    numero: 1,
+    pergunta: "Em 1969, a minutos do pouso lunar da Apollo 11, o computador de bordo ficou sobrecarregado por sinais desnecessários de um radar. O software evitou o cancelamento da missão porque foi projetado para:",
     opcoes: {
-      A: "O celular adivinha pelo Wi-Fi da rua.",
-      B: "Ele conversa com satélites no espaço que calculam a posição.",
-      C: "Tem uma pessoa digitando o mapa ao vivo.",
-      D: "Ele segue a luz do sol para saber o caminho."
+      a: "A) Desligar o computador e reiniciar em poucos segundos.",
+      b: "B) Priorizar as tarefas vitais para o pouso e ignorar os processos secundários.",
+      c: "C) Assumir o controle manual da nave automaticamente.",
+      d: "D) Transmitir os dados de erro para o controle em terra e aguardar uma atualização de código em tempo real."
     },
-    correta: "B",
-    explicacao: "O GPS recebe sinais invisíveis emitidos por satélites em órbita ao redor da Terra para calcular sua localização exata em segundos!",
-    cientista: {
-      nome: "Gladys West",
-      cargo: "Matemática e Programadora de Satélites",
-      foto: "/img/gladys.jpg",
-      conquista: "Desenvolveu os modelos matemáticos do formato da Terra que tornaram a tecnologia do GPS possível!",
-      historia: "Gladys cresceu em uma área rural e trabalhou duro para conseguir uma bolsa de estudos em matemática. Ela programou os supercomputadores da Marinha dos EUA para modelar o planeta Terra com precisão milimétrica!"
-    }
-  },
-  {
-    id: 2,
-    pergunta: "Quem foi a primeira pessoa na história da humanidade a escrever um código de computador?",
-    opcoes: {
-      A: "Albert Einstein.",
-      B: "Ada Lovelace, uma mulher matemática no século XIX.",
-      C: "Os criadores do aplicativo TikTok.",
-      D: "Um robô construído no Japão."
-    },
-    correta: "B",
-    explicacao: "Antes mesmo de existirem computadores elétricos, Ada escreveu o primeiro programa em 1843!",
-    cientista: {
-      nome: "Ada Lovelace",
-      cargo: "A Primeira Programadora da História",
-      foto: "/img/ada.jpg",
-      conquista: "Criou o primeiro algoritmo que podia ser processado por uma máquina mecânica.",
-      historia: "Ada era apaixonada por matemática e poesia. Ela percebeu que as máquinas do futuro não serviriam só para fazer contas, mas também para criar música, arte e processar qualquer tipo de informação!"
-    }
-  },
-  {
-    id: 3,
-    pergunta: "Quando você assiste a um vídeo no YouTube ou TikTok, como ele chega tão rápido na sua tela?",
-    opcoes: {
-      A: "O vídeo vem voando pelo ar direto das estrelas.",
-      B: "É quebrado em pedacinhos de dados e viaja por cabos e antenas.",
-      C: "O celular já guarda todos os vídeos gravados.",
-      D: "Viaja nas ondas de rádio dos carros."
-    },
-    correta: "B",
-    explicacao: "Tudo na internet vira código binário (0 e 1) e viaja por redes de computadores em milissegundos!",
-    cientista: {
-      nome: "Radia Perlman",
-      cargo: "Engenheira de Redes de Computadores",
-      foto: "/img/radia.jpg",
-      conquista: "Inventou o algoritmo Spanning Tree Protocol (STP), essencial para o funcionamento da Internet.",
-      historia: "Conhecida como a 'Mãe da Internet', Radia criou as regras que permitem que bilhões de computadores se conectem sem que a rede fique congestionada ou caia!"
-    }
-  },
-  {
-    id: 4,
-    pergunta: "Como os cientistas do INPE conseguem avisar que vai chover forte antes mesmo das nuvens chegarem?",
-    opcoes: {
-      A: "Chacoalhando um copo de água.",
-      B: "Satélites tiram fotos do clima e supercomputadores analisam.",
-      C: "Usando um aplicativo de adivinhação.",
-      D: "Aviões avisam pelo rádio ao ver nuvens."
-    },
-    correta: "B",
-    explicacao: "Satélites ambientais fotografam a Terra continuamente e supercomputadores do INPE analisam os dados em tempo real!",
-    cientista: {
-      nome: "Cientistas e Pesquisadoras do INPE",
-      cargo: "Engenheiras de Software, Dados e Ciências Espaciais",
-      foto: "/img/inpe.jpg",
-      conquista: "Desenvolvem softwares e analisam imagens de satélite para proteger florestas, rios e prever o tempo no Brasil.",
-      historia: "No INPE (Instituto Nacional de Pesquisas Espaciais), muitas mulheres trabalham todos os dias desenvolvendo código, analisando a Amazônia e operando satélites para ajudar a cuidar do nosso país!"
-    }
-  },
-  {
-    id: 5,
-    pergunta: "O que uma pessoa precisa ter para conseguir criar aplicativos e jogos de computador?",
-    opcoes: {
-      A: "Ser um gênio super-raro de matemática.",
-      B: "Ter um computador banhado a ouro.",
-      C: "Curiosidade, vontade de resolver problemas e praticar lógica.",
-      D: "Ser homem e adulto com mais de 30 anos."
-    },
-    correta: "C",
-    explicacao: "Programar é sobre gostar de criar coisas, ser curioso(a) e praticar a lógica como em um jogo de quebra-cabeça!",
+    correta: "b",
     cientista: {
       nome: "Margaret Hamilton",
-      cargo: "Diretora de Engenharia de Software da NASA",
-      foto: "/img/margaret.jpg",
-      conquista: "Liderou a equipe que desenvolveu o código de bordo da missão Apollo 11, que levou o homem à Lua!",
-      historia: "Margaret criou o próprio termo 'Engenharia de Software'. O programa que ela escreveu era tão bem feito que salvou a nave espacial Apollo de um travamento minutos antes de pousar na Lua em 1969!"
+      cargo: "Diretora da Divisão de Engenharia de Software do Laboratório de Instrumentação do MIT",
+      imagem: "/img/margaret.jpg",
+      explicacao: "Liderou a criação do software de bordo da Apollo. Seu conceito inovador de arquitetura assíncrona e priorização de tarefas evitou o travamento do computador e salvou o pouso lunar histórico!"
     }
   },
   {
-    id: 6,
-    pergunta: "Quando você joga no celular, videogame ou computador, como a personagem atende exatamente quando você aperta o botão?",
+    numero: 2,
+    pergunta: "Para que os Sistemas Globais de Navegação por Satélite (como o GPS americano ou o Galileo europeu) consigam calcular a posição exata de um receptor na Terra, o que o computador precisa considerar?",
     opcoes: {
-      A: "Uma pessoa fica olhando pela câmera e movendo a imagem.",
-      B: "É um código de lógica e física digitado por programadores.",
-      C: "O jogo lê o pensamento de quem está jogando.",
-      D: "O videogame aprende os movimentos olhando para a tela."
+      a: "A) O formato geodésico exato da Terra e suas variações gravitacionais.",
+      b: "B) A distância entre a Terra e a Lua a cada segundo.",
+      c: "C) A quantidade de nuvens na atmosfera sobre o receptor.",
+      d: "D) A variação da velocidade da luz provocada pela rotação do núcleo terrestre."
     },
-    correta: "B",
-    explicacao: "O código do jogo calcula os movimentos, gravidade e colisões centenas de vezes por segundo!",
+    correta: "a",
     cientista: {
-      nome: "Carol Shaw",
-      cargo: "Primeira Designer e Programadora de Jogos",
-      foto: "/img/carol.jpg",
-      conquista: "Criou jogos clássicos para Atari e abriu caminhos para toda a indústria moderna de videogames!",
-      historia: "Carol Shaw adorava matemática e computadores desde criança. Ela se tornou a primeira mulher a programar jogos de videogame profissionais na história!"
+      nome: "Gladys West",
+      cargo: "Matemática e Programadora da Marinha dos EUA",
+      imagem: "/img/gladys.jpg",
+      explicacao: "Programou os supercomputadores da Marinha para processar altimetria por satélite, gerando o modelo matemático ultrapreciso do geoide terrestre que é a base dos sistemas de GPS e navegação modernos!"
     }
   },
   {
-    id: 7,
-    pergunta: "Como os fones sem fio, controles de videogame e o Wi-Fi da escola enviam dados e música sem nenhum fio conectado?",
+    numero: 3,
+    pergunta: "Antes do uso generalizado de computadores eletrônicos para navegação em tempo real, como a NASA calculava com precisão as janelas de lançamento e as trajetórias de reentrada das cápsulas espaciais?",
     opcoes: {
-      A: "Usam pequenos espelhos que refletem a luz do teto.",
-      B: "Usam ondas de rádio invisíveis codificadas com matemática.",
-      C: "O som viaja pelo vento até o fone.",
-      D: "O aparelho guarda a música inteira antes mesmo de ligar."
+      a: "A) Os astronautas calculavam visualmente durante o voo.",
+      b: "B) Uma equipe de matemáticas calculava as equações de mecânica celeste manualmente.",
+      c: "C) Os cálculos eram estimados por aproximações de tabelas astronômicas antigas.",
+      d: "D) A trajetória era corrigida automaticamente por giroscópios mecânicos sem necessidade de cálculo prévio."
     },
-    correta: "B",
-    explicacao: "As informações viajam em ondas eletromagnéticas invisíveis pelo ar e o fone decodifica em som na hora!",
+    correta: "b",
+    cientista: {
+      nome: "Katherine Johnson",
+      cargo: "Matemática e Física da NASA",
+      imagem: "/img/katherine.jpg",
+      explicacao: "Seus cálculos manuais de geometria analítica e mecânica orbital determinaram com precisão absoluta as trajetórias das missões Mercury e o encontro orbital entre o Módulo Lunar e o Módulo de Comando na missão Apollo!"
+    }
+  },
+  {
+    numero: 4,
+    pergunta: "Os primeiros computadores executavam apenas código em linguagem de máquina (instruções numéricas diretas). Qual inovação desenvolvida para facilitar a programação permitiu criar linguagens de alto nível usadas na robótica?",
+    opcoes: {
+      a: "A) A criação de telas sensíveis ao toque.",
+      b: "B) O desenvolvimento do Compilador, que traduz linguagens baseadas em palavras para código de máquina.",
+      c: "C) O invento dos circuitos integrados resistentes à radiação.",
+      d: "D) A substituição das válvulas por transistores de efeito de campo na memória RAM."
+    },
+    correta: "b",
+    cientista: {
+      nome: "Grace Hopper",
+      cargo: "Cientista da Computação e Almirante da Marinha dos EUA",
+      imagem: "/img/grace.jpg",
+      explicacao: "Pioneira na computação, criou o primeiro compilador da história (A-0) e idealizou as linguagens de programação baseadas em palavras (origem do COBOL). Também documentou o primeiro 'bug' físico registrado em 1947!"
+    }
+  },
+  {
+    numero: 5,
+    pergunta: "Um buraco negro supermassivo não pode ser fotografado diretamente com uma única lente, pois exigiria um telescópio do tamanho da Terra. Como a equipe do Event Horizon Telescope gerou a primeira imagem do buraco negro M87* em 2019?",
+    opcoes: {
+      a: "A) Enviando uma sonda espacial para fotografá-lo de perto.",
+      b: "B) Utilizando um algoritmo para reconstruir imagens a partir de dados combinados de vários radiotelescópios pelo mundo.",
+      c: "C) Usando inteligência artificial para gerar uma ilustração baseada em teorias."
+    },
+    correta: "b",
+    cientista: {
+      nome: "Katie Bouman",
+      cargo: "Professora e Cientista da Computação",
+      imagem: "/img/katie.jpg",
+      explicacao: "Liderou o desenvolvimento do algoritmo CHIRP (Continuous High-resolution Image Reconstruction from Prompt Transformation), essencial para processar terabytes de dados e reconstruir a histórica primeira imagem de um buraco negro!"
+    }
+  },
+  {
+    numero: 6,
+    pergunta: "A atmosfera terrestre distorce a luz das estrelas e bloqueia certas frequências de radiação. Qual foi a solução técnica projetada para obter imagens astronômicas nítidas no óptico e ultravioleta?",
+    opcoes: {
+      a: "A) Construir telescópios dentro de câmaras de vácuo nas montanhas.",
+      b: "B) Colocar um observatório óptico em órbita baixa ao redor da Terra, acima da atmosfera.",
+      c: "C) Usar lasers gigantes para dissipar a umidade do ar sobre os observatórios."
+    },
+    correta: "b",
+    cientista: {
+      nome: "Nancy Grace Roman",
+      cargo: "Primeira Executiva-Chefe de Astronomia da NASA",
+      imagem: "/img/nancy.jpg",
+      explicacao: "Conhecida como a 'Mãe do Hubble', idealizou e estruturou todo o programa do Telescópio Espacial Hubble, convencendo o Congresso americano a financiar a missão que revolucionou a astronomia moderna!"
+    }
+  },
+  {
+    numero: 7,
+    pergunta: "Para enviar dados entre satélites e estações terrenas sem que o sinal seja interceptado ou sofrer interferência de outras redes, qual princípio de transmissão de rádio é utilizado?",
+    opcoes: {
+      a: "A) Transmissão por pulsos de luz infravermelha em linha reta contínua.",
+      b: "B) Uso de uma única frequência fixa de ondas curtas amadoras.",
+      c: "C) Salto de frequência (Frequency Hopping), alternando os canais de transmissão em código sincronizado.",
+      d: "D) Amplificação de sinal via cabos submarinos direcionais."
+    },
+    correta: "c",
     cientista: {
       nome: "Hedy Lamarr",
       cargo: "Inventora e Atriz",
-      foto: "/img/hedy.jpg",
-      conquista: "Co-inventou a tecnologia de salto de frequência de rádio, que é a base direta do Wi-Fi e Bluetooth de hoje!",
-      historia: "Além de uma famosa atriz de Hollywood, Hedy era uma inventora genial. Sua invenção de comunicação secreta via rádio permitiu a criação das conexões sem fio modernas!"
+      imagem: "/img/hedy.jpg",
+      explicacao: "Co-patenteou o sistema de comunicação por salto de frequência na Segunda Guerra Mundial. Essa invenção serve como base fundamental para as tecnologias Wi-Fi, Bluetooth e redes de satélites criptografadas de hoje!"
     }
   },
   {
-    id: 8,
-    pergunta: "Quando conversamos com assistentes virtuais ou IA e elas respondem como humanos, como elas aprendem a falar?",
+    numero: 8,
+    pergunta: "Como o sinal de rádio demora minutos para ir da Terra até Marte, o que o robô Perseverance precisa fazer quando encontra uma pedra no caminho?",
     opcoes: {
-      A: "Tem um humano escondido no servidor respondendo mensagens.",
-      B: "Elas leem dicionários de papel enquanto estamos dormindo.",
-      C: "Cientistas treinam algoritmos com milhões de dados e conversas humanas.",
-      D: "As assistentes adivinham as palavras por sorteio."
+      a: "A) Esperar a equipe do INPE mandar o comando de desviar.",
+      b: "B) Usar o seu próprio programa de computador para desviar sozinho.",
+      c: "C) Dar a ré até o sinal de Wi-Fi voltar.",
+      d: "D) Buzinar para a pedra sair do caminho."
     },
-    correta: "C",
-    explicacao: "Modelos de Inteligência Artificial aprendem padrões matemáticos analisando enormes conjuntos de dados fornecidos por cientistas!",
+    correta: "b",
     cientista: {
-      nome: "Fei-Fei Li",
-      cargo: "Cientista de Computação e Especialista em IA",
-      foto: "/img/feifei.jpg",
-      conquista: "Criou o ImageNet, o maior banco de dados que ensinou os computadores a enxergarem e entenderem imagens!",
-      historia: "Fei-Fei Li revolucionou a Inteligência Artificial ao perceber que os computadores precisavam de milhões de exemplos visuais para aprender a reconhecer o mundo como os humanos!"
+      nome: "Vandi Verma",
+      cargo: "Engenheira de Robótica Espacial do JPL / NASA",
+      imagem: "/img/vandi.jpg",
+      explicacao: "Desenvolve os sistemas de inteligência artificial e navegação autônoma dos rovers de Marte, permitindo que robôs como o Perseverance naveguem e tomem decisões de desvio sozinhos no solo marciano!"
     }
   }
 ];
 
-// ESTADO DO JOGO E PONTUAÇÃO
-let estadoJogo = {
-  jogadores: {}, // { socketId: { apelido: 'Nome', pontos: 0 } }
-  perguntaIndice: -1,
-  fase: 'LOGIN',
-  votos: { A: 0, B: 0, C: 0, D: 0 },
-  votosJogadores: {},
-  tempoInicioPergunta: 0,
-  sonhos: [] // [{ apelido: 'Nome', sonho: 'Texto' }]
-};
+let jogadores = {};
+let respostasPerguntaAtual = { a: 0, b: 0, c: 0, d: 0, total: 0 };
+let perguntaAtualNum = 1;
 
 io.on('connection', (socket) => {
-  console.log('⚡ Dispositivo conectado:', socket.id);
+  io.emit('atualizar_jogadores', Object.keys(jogadores).length);
 
-  socket.emit('estado_atual', {
-    fase: estadoJogo.fase,
-    numeroPergunta: estadoJogo.perguntaIndice + 1,
-    totalJogadores: Object.keys(estadoJogo.jogadores).length
+  socket.on('novo_jogador', (nome) => {
+    jogadores[socket.id] = { nome: nome, pontos: 0, sonho: "" };
+    io.emit('atualizar_jogadores', Object.keys(jogadores).length);
   });
 
-  socket.on('novo_jogador', (apelido) => {
-    estadoJogo.jogadores[socket.id] = {
-      apelido: apelido,
-      pontos: 0
-    };
-    console.log(`👤 Jogador registrado: ${apelido}`);
+  socket.on('solicitar_pergunta', (num) => {
+    perguntaAtualNum = num;
+    respostasPerguntaAtual = { a: 0, b: 0, c: 0, d: 0, total: 0 };
+    const p = perguntas[num - 1];
     
-    io.emit('atualizar_jogadores', {
-      total: Object.keys(estadoJogo.jogadores).length,
-      lista: Object.values(estadoJogo.jogadores).map(j => j.apelido)
-    });
+    if (p) {
+      socket.emit('dados_pergunta', { ...p, totalPerguntas: perguntas.length });
+      io.emit('receber_pergunta', {
+        numero: p.numero,
+        totalPerguntas: perguntas.length
+      });
+      io.emit('atualizar_votos', respostasPerguntaAtual);
+    }
   });
 
-  socket.on('enviar_resposta', (opcao) => {
-    if (estadoJogo.fase === 'PERGUNTA' && !estadoJogo.votosJogadores[socket.id]) {
-      estadoJogo.votosJogadores[socket.id] = opcao;
-      estadoJogo.votos[opcao] = (estadoJogo.votos[opcao] || 0) + 1;
-
-      // Calcular Pontuação baseada em Acerto + Velocidade (Tempo de resposta)
-      const perguntaAtual = quizData[estadoJogo.perguntaIndice];
-      if (opcao === perguntaAtual.correta && estadoJogo.jogadores[socket.id]) {
-        const tempoGasto = (Date.now() - estadoJogo.tempoInicioPergunta) / 1000;
-        const bônusVelocidade = Math.max(0, Math.round(100 - tempoGasto * 5));
-        const pontosGanhos = 100 + bônusVelocidade;
-        
-        estadoJogo.jogadores[socket.id].pontos += pontosGanhos;
+  socket.on('enviar_resposta', (dados) => {
+    const resp = dados.resposta.toLowerCase();
+    if (respostasPerguntaAtual[resp] !== undefined) {
+      respostasPerguntaAtual[resp]++;
+      respostasPerguntaAtual.total++;
+      
+      if (jogadores[socket.id]) {
+        const p = perguntas[perguntaAtualNum - 1];
+        if (p && resp === p.correta) {
+          jogadores[socket.id].pontos += 10;
+        }
       }
 
-      io.emit('atualizar_votos', estadoJogo.votos);
+      io.emit('atualizar_votos', respostasPerguntaAtual);
     }
   });
 
-  // Receber os sonhos das crianças no final
-  socket.on('enviar_sonho', (textoSonho) => {
-    const jogador = estadoJogo.jogadores[socket.id];
-    const apelido = jogador ? jogador.apelido : 'Cientista Anônimo';
+  socket.on('revelar_resposta_servidor', (num) => {
+    const p = perguntas[num - 1];
+    if (p) {
+      io.emit('mostrar_revelacao', { ...p, totalPerguntas: perguntas.length });
+    }
+  });
+
+  socket.on('solicitar_ranking', () => {
+    const listaJogadores = Object.values(jogadores);
+    listaJogadores.sort((a, b) => b.pontos - a.pontos);
     
-    const novoSonho = { apelido: apelido, sonho: textoSonho };
-    estadoJogo.sonhos.push(novoSonho);
-
-    io.emit('novo_sonho_mural', novoSonho);
+    io.emit('exibir_ranking_projetor', listaJogadores);
   });
 
-  socket.on('admin_proxima_pergunta', () => {
-    estadoJogo.perguntaIndice++;
+  socket.on('enviar_sonho', (dados) => {
+    if (jogadores[socket.id]) {
+      jogadores[socket.id].sonho = dados.sonho;
+    }
     
-    // Se passar das 8 perguntas, abre o Mural de Sonhos / Ranking
-    if (estadoJogo.perguntaIndice >= quizData.length) {
-      estadoJogo.fase = 'MURAL';
-      
-      // Ordena o Ranking dos 3 primeiros lugares
-      const ranking = Object.values(estadoJogo.jogadores)
-        .sort((a, b) => b.pontos - a.pontos)
-        .slice(0, 3);
+    const listaSonhos = Object.values(jogadores)
+      .filter(j => j.sonho)
+      .map(j => ({ nome: j.nome, sonho: j.sonho }));
 
-      io.emit('abrir_mural_ranking', {
-        ranking: ranking,
-        sonhos: estadoJogo.sonhos
-      });
-      return;
-    }
-
-    estadoJogo.fase = 'PERGUNTA';
-    estadoJogo.votos = { A: 0, B: 0, C: 0, D: 0 };
-    estadoJogo.votosJogadores = {};
-    estadoJogo.tempoInicioPergunta = Date.now();
-
-    const perguntaAtual = quizData[estadoJogo.perguntaIndice];
-
-    console.log(`▶️ Enviando pergunta ${estadoJogo.perguntaIndice + 1}`);
-
-    io.emit('nova_pergunta', {
-      numero: estadoJogo.perguntaIndice + 1,
-      totalPerguntas: quizData.length,
-      perguntaTexto: perguntaAtual.pergunta,
-      opcoes: perguntaAtual.opcoes
-    });
+    io.emit('atualizar_mural_completo', listaSonhos);
   });
 
-  socket.on('admin_revelar_resposta', () => {
-    if (estadoJogo.perguntaIndice >= 0 && estadoJogo.perguntaIndice < quizData.length) {
-      estadoJogo.fase = 'REVELACAO';
-      const p = quizData[estadoJogo.perguntaIndice];
-      io.emit('resposta_revelada', {
-        correta: p.correta,
-        explicacao: p.explicacao,
-        cientista: p.cientista
-      });
-    }
+  // DISPARA A TELA DA PRIMEIRA LINHA DE CÓDIGO
+  socket.on('iniciar_desafio_codigo', () => {
+    io.emit('abrir_tela_codigo');
+  });
+
+  // RECEBE O EXECUTAR CÓDIGO DA CRIANÇA E MANDA PRO TERMINAL DO PROJETOR
+  socket.on('executou_codigo', (dados) => {
+    io.emit('codigo_executado_projetor', dados);
   });
 
   socket.on('disconnect', () => {
-    delete estadoJogo.jogadores[socket.id];
-    delete estadoJogo.votosJogadores[socket.id];
-    io.emit('atualizar_jogadores', {
-      total: Object.keys(estadoJogo.jogadores).length,
-      lista: Object.values(estadoJogo.jogadores).map(j => j.apelido)
-    });
+    delete jogadores[socket.id];
+    io.emit('atualizar_jogadores', Object.keys(jogadores).length);
   });
 });
 
-const PORT = process.env.PORT || 3000;
-http.listen(PORT, () => {
+const PORT = 3000;
+server.listen(PORT, () => {
   console.log(`🚀 Servidor rodando em http://localhost:${PORT}`);
 });

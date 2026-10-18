@@ -3,8 +3,7 @@
 <head>
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
-  <title>Cientistas do Futuro</title>
-  <!-- Fonte Retro Limpa e Muito Legivel -->
+  <title>Cientistas do Futuro - Projetor</title>
   <link href="https://fonts.googleapis.com/css2?family=VT323&display=swap" rel="stylesheet">
   <style>
     * { 
@@ -13,7 +12,7 @@
       letter-spacing: 1px;
     }
     body {
-      background: #08031a;
+      background: #060214;
       color: #ffffff;
       margin: 0;
       padding: 20px;
@@ -23,64 +22,44 @@
       align-items: center;
       justify-content: center;
       overflow: hidden;
-      position: relative;
     }
 
-    /* CANVAS DA GALÁXIA ANIMADA NO FUNDO */
     #space-canvas {
-      position: absolute;
-      top: 0;
-      left: 0;
-      width: 100%;
-      height: 100%;
-      z-index: 1;
-      image-rendering: pixelated;
+      position: fixed;
+      top: 0; left: 0;
+      width: 100vw; height: 100vh;
+      z-index: 0;
+      pointer-events: none;
     }
 
-    /* CAIXA RETRO SOBREPOSTA AO FUNDO */
     .retro-box {
-      background: rgba(26, 12, 64, 0.92);
+      background: rgba(26, 12, 64, 0.93);
       border: 4px solid #38bdf8;
-      box-shadow: 0 0 35px rgba(56, 189, 248, 0.3), 8px 8px 0px #000000;
-      padding: 40px;
-      max-width: 800px;
+      box-shadow: 0 0 35px rgba(56, 189, 248, 0.3), 8px 8px 0px #000;
+      padding: 35px;
+      max-width: 980px;
       width: 100%;
       text-align: center;
       border-radius: 8px;
       position: relative;
-      z-index: 2;
+      z-index: 10;
     }
 
     h1 {
       color: #facc15;
       font-size: 3.8rem;
-      margin: 0 0 20px 0;
+      margin: 0 0 15px 0;
       text-transform: uppercase;
-      text-shadow: 3px 3px #000000;
+      text-shadow: 3px 3px #000;
     }
 
     h2 {
       color: #38bdf8;
       font-size: 2.2rem;
-      text-shadow: 2px 2px #000;
-      line-height: 1.4;
       margin: 10px 0;
+      text-shadow: 2px 2px #000;
     }
 
-    /* QUADRO DE INFORMAÇÕES CENTRADO */
-    .info-box {
-      background: rgba(13, 6, 40, 0.85);
-      border: 3px dashed #facc15;
-      padding: 25px;
-      margin: 30px 0;
-    }
-
-    .info-box p {
-      margin: 8px 0;
-      line-height: 1.5;
-    }
-
-    /* BOTÃO LIMPO COM NOME EXATO */
     .btn-pixel {
       background: #22c55e;
       color: #ffffff;
@@ -89,60 +68,156 @@
       padding: 16px 40px;
       font-size: 2.2rem;
       cursor: pointer;
-      margin-top: 10px;
-      transition: all 0.1s;
+      margin-top: 15px;
       text-transform: uppercase;
     }
-    .btn-pixel:hover {
-      background: #16a34a;
-      transform: translate(-2px, -2px);
-      box-shadow: 7px 7px 0px #000000;
-    }
-    .btn-pixel:active {
-      transform: translate(2px, 2px);
-      box-shadow: 2px 2px 0px #000000;
-    }
-
     .btn-yellow { background: #eab308; color: #000; }
 
-    /* IMAGEM DA CIENTISTA */
-    .cientista-img {
-      width: 240px;
-      height: 240px;
-      object-fit: cover;
-      border: 4px solid #38bdf8;
-      box-shadow: 6px 6px 0px #000;
-      margin: 15px 0;
+    .pergunta-texto {
+      font-size: 1.8rem;
+      color: #ffffff;
+      text-align: left;
+      background: #0d0628;
+      padding: 20px;
+      border-left: 4px solid #38bdf8;
+      margin-bottom: 25px;
+      line-height: 1.4;
     }
 
-    /* MURAL DE SONHOS EM GRID */
-    .mural-grid {
-      display: grid;
-      grid-template-columns: repeat(auto-fill, minmax(240px, 1fr));
-      gap: 15px;
-      margin-top: 20px;
-      max-height: 350px;
-      overflow-y: auto;
-    }
-    .card-sonho {
-      background: #0d0628;
-      border: 2px solid #38bdf8;
-      padding: 15px;
-      font-size: 1.3rem;
-      line-height: 1.4;
-      color: #fef08a;
-      box-shadow: 4px 4px 0px #000;
+    .opcoes-lista {
+      display: flex;
+      flex-direction: column;
+      gap: 12px;
       text-align: left;
     }
 
-    /* PÓDIO VINTAGE */
-    .podium-box {
+    .opcao-card {
       background: #0d0628;
-      border: 2px solid #facc15;
+      border: 2px solid #38bdf8;
+      padding: 12px 18px;
+      position: relative;
+      overflow: hidden;
+    }
+
+    .medidor-barra {
+      position: absolute;
+      top: 0; left: 0; bottom: 0;
+      background: rgba(56, 189, 248, 0.25);
+      width: 0%;
+      transition: width 0.3s ease;
+      z-index: 1;
+    }
+
+    .opcao-conteudo {
+      position: relative;
+      z-index: 2;
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      gap: 15px;
+      font-size: 1.4rem;
+      color: #fef08a;
+    }
+
+    .opcao-texto {
+      flex: 1;
+      text-align: left;
+      line-height: 1.3;
+    }
+
+    .opcao-contador {
+      color: #38bdf8;
+      font-weight: bold;
+      white-space: nowrap;
+      min-width: 100px;
+      text-align: right;
+    }
+
+    .revelacao-grid {
+      display: grid;
+      grid-template-columns: 320px 1fr;
+      gap: 25px;
+      text-align: left;
+      margin-top: 20px;
+    }
+
+    .cientista-card {
+      background: #0d0628;
+      border: 3px solid #f472b6;
+      padding: 18px 15px;
+      text-align: center;
+      box-shadow: 6px 6px 0px #000;
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+    }
+
+    .box-foto-cientista {
+      width: 100%;
+      height: 320px;
+      border: 2px solid #38bdf8;
+      background: #000000;
+      margin-top: 10px;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      overflow: hidden;
+    }
+
+    .cientista-img {
+      width: 100%;
+      height: 100%;
+      object-fit: contain;
+      background-color: #0d0628;
+    }
+
+    .resposta-certa-destaque {
+      background: #14532d;
+      border: 3px solid #22c55e;
       padding: 15px;
-      margin: 10px 0;
+      margin-bottom: 15px;
+      font-size: 1.5rem;
+      color: #86efac;
+    }
+
+    .podio-grid {
+      display: flex;
+      justify-content: center;
+      gap: 20px;
+      align-items: flex-end;
+      margin: 25px 0;
+    }
+
+    .podio-box {
+      background: #0d0628;
+      border: 3px solid #38bdf8;
+      padding: 15px;
+      width: 180px;
+      text-align: center;
       box-shadow: 4px 4px 0px #000;
-      font-size: 1.6rem;
+    }
+    .podio-1 { border-color: #facc15; height: 180px; }
+    .podio-2 { border-color: #94a3b8; height: 150px; }
+    .podio-3 { border-color: #b45309; height: 130px; }
+
+    .mural-container {
+      max-height: 220px;
+      overflow-y: auto;
+      display: grid;
+      grid-template-columns: 1fr 1fr;
+      gap: 15px;
+      background: #0d0628;
+      border: 2px dashed #facc15;
+      padding: 15px;
+      margin-top: 15px;
+    }
+
+    .sonho-card {
+      background: #1a0c40;
+      border: 1px solid #38bdf8;
+      padding: 10px 15px;
+      text-align: left;
+      font-size: 1.3rem;
     }
 
     .hidden { display: none !important; }
@@ -150,267 +225,137 @@
 </head>
 <body>
 
-  <!-- ELEMENTO VISUAL DO ESPAÇO RETRO ANIMADO -->
   <canvas id="space-canvas"></canvas>
 
   <div class="retro-box">
 
-    <!-- TELA INICIAL DO PROJETOR -->
+    <!-- TELA 1: ESPERA PROJETOR -->
     <div id="p-tela-espera">
       <h1>Cientistas do Futuro</h1>
-      
-      <div class="info-box">
+      <div style="background: rgba(13, 6, 40, 0.85); border: 3px dashed #facc15; padding: 20px; margin: 20px 0;">
         <p style="font-size: 2.2rem; color: #38bdf8;">
-          Jogadores conectados: <span id="contador-jogadores" style="color: #22c55e;"></span>
+          Jogadores conectados: <span id="contador-jogadores" style="color: #22c55e;">0</span>
         </p>
-        <p style="font-size: 1.6rem; color: #fef08a;">
-          Aponte a câmera para o QR Code para entrar no jogo
-        </p>
+        <p style="font-size: 1.6rem; color: #fef08a;">Aponte a câmera para o QR Code para entrar no jogo</p>
       </div>
-
       <button class="btn-pixel" onclick="iniciarJogo()">Iniciar Quiz</button>
     </div>
 
-    <!-- TELA DE PERGUNTA NO TELÃO -->
+    <!-- TELA 2: PERGUNTA + MEDIDORES EM TEMPO REAL -->
     <div id="p-tela-pergunta" class="hidden">
-      <h2 id="p-numero-pergunta">PERGUNTA 1/8</h2>
-      <p id="p-texto-pergunta" style="font-size: 1.8rem; color: #fef08a; margin: 20px 0; line-height: 1.5;"></p>
+      <h2 id="p-numero-pergunta" style="color: #facc15;">PERGUNTA 1/8</h2>
+      
+      <div id="p-texto-pergunta" class="pergunta-texto"></div>
 
-      <div style="text-align: center;">
-        <img id="p-img-cientista" class="cientista-img" src="" alt="Cientista">
-        <p id="p-nome-cientista" style="font-size: 1.5rem; color: #f472b6; margin-top: 5px;"></p>
-      </div>
+      <div id="p-container-opcoes" class="opcoes-lista"></div>
 
       <div style="margin-top: 25px;">
-        <button class="btn-pixel btn-yellow" onclick="revelarResposta()">Revelar Resposta</button>
-        <button class="btn-pixel" onclick="proximaPergunta()">Próxima</button>
-      </div>
-
-      <div id="box-resposta-certa" class="hidden" style="margin-top: 20px; background: #14532d; border: 3px solid #22c55e; padding: 15px;">
-        <p style="font-size: 1.6rem; color: #86efac; margin: 0;">
-          CORRETA: <span id="p-resposta-correta"></span>
-        </p>
+        <button class="btn-pixel btn-yellow" onclick="revelarResposta()">Revelar Resposta Correta</button>
       </div>
     </div>
 
-    <!-- TELA FINAL: MURAL DE SONHOS E PÓDIO -->
-    <div id="p-tela-final" class="hidden">
-      <h1>Mural e Pódio Final</h1>
+    <!-- TELA 3: REVELAÇÃO CIENTÍFICA -->
+    <div id="p-tela-revelacao" class="hidden">
+      <div id="p-resposta-correta-box" class="resposta-certa-destaque" style="margin-top: 10px;"></div>
 
-      <h2>Ranking dos Cientistas</h2>
-      <div id="podio-container"></div>
+      <div class="revelacao-grid">
+        <div class="cientista-card">
+          <h3 id="p-nome-cientista" style="color: #f472b6; font-size: 1.8rem; margin: 0 0 5px 0; text-transform: uppercase;"></h3>
+          <p id="p-cargo-cientista" style="color: #38bdf8; font-size: 1.1rem; margin: 0 0 8px 0; line-height: 1.2;"></p>
+          
+          <div class="box-foto-cientista">
+            <img id="p-img-cientista" class="cientista-img" src="" alt="Foto Cientista">
+          </div>
+        </div>
 
-      <h2 style="margin-top: 30px; color: #f472b6;">Mural do Futuro</h2>
-      <div id="mural-container" class="mural-grid"></div>
+        <div style="background: #0d0628; border: 2px solid #facc15; padding: 22px; font-size: 1.4rem; line-height: 1.5; color: #fef08a; text-align: left;">
+          <h3 style="color: #facc15; margin-top: 0; font-size: 1.8rem; text-transform: uppercase;">Estudo do Fato Histórico:</h3>
+          <p id="p-explicacao-cientista" style="margin: 0;"></p>
+        </div>
+      </div>
+
+      <div style="margin-top: 25px; text-align: right;">
+        <button id="btn-proxima-ou-ranking" class="btn-pixel" onclick="proximaPerguntaOuRanking()">Próxima Pergunta -></button>
+      </div>
     </div>
+
+    <!-- TELA 4: RANKING E MURAL DOS SONHOS -->
+    <div id="p-tela-ranking" class="hidden">
+      <h1>RANKING DOS CIENTISTAS</h1>
+
+      <div class="podio-grid">
+        <div class="podio-box podio-2">
+          <p style="color: #94a3b8; font-size: 1.8rem; margin: 0;">2 LUGAR</p>
+          <h3 id="nome-2" style="color: #fff; font-size: 1.6rem; margin: 10px 0;">-</h3>
+          <p id="pts-2" style="color: #38bdf8; font-size: 1.3rem;">0 pts</p>
+        </div>
+        <div class="podio-box podio-1">
+          <p style="color: #facc15; font-size: 2rem; margin: 0;">1 LUGAR</p>
+          <h3 id="nome-1" style="color: #fff; font-size: 1.8rem; margin: 10px 0;">-</h3>
+          <p id="pts-1" style="color: #22c55e; font-size: 1.5rem;">0 pts</p>
+        </div>
+        <div class="podio-box podio-3">
+          <p style="color: #b45309; font-size: 1.6rem; margin: 0;">3 LUGAR</p>
+          <h3 id="nome-3" style="color: #fff; font-size: 1.4rem; margin: 10px 0;">-</h3>
+          <p id="pts-3" style="color: #38bdf8; font-size: 1.2rem;">0 pts</p>
+        </div>
+      </div>
+
+      <h2 style="color: #facc15; margin-top: 20px;">MURAL DOS SONHOS DO FUTURO</h2>
+      <div id="mural-sonhos-lista" class="mural-container"></div>
+
+      <div style="margin-top: 25px; text-align: center;">
+        <button class="btn-pixel" style="background: #38bdf8; color: #000;" onclick="irParaPrimeiroCodigo()">DAR O PRIMEIRO PASSO NA TECNOLOGIA -></button>
+      </div>
+    </div>
+
+    <!-- TELA 5: TELA FINAL DE INSPIRAÇÃO NO PROJETOR -->
+    <div id="p-tela-terminal" class="hidden">
+      <h1>PRIMEIRA LINHA DE CÓDIGO</h1>
+      <div style="background: #0d0628; border: 3px solid #38bdf8; padding: 30px; margin-top: 20px;">
+        <p style="color: #facc15; font-size: 2.2rem; margin: 0 0 15px 0;">Hora de programar nos seus celulares!</p>
+        <p style="color: #fff; font-size: 1.8rem; line-height: 1.5;">Escrevam o comando <span style="color: #f472b6;">print("Olá, futuro Cientista!")</span> e vejam o seu programa rodar no próprio ecrã!</p>
+      </div>
+    </div>
+
   </div>
 
   <script src="/socket.io/socket.io.js"></script>
   <script>
-    // --- LÓGICA DA GALÁXIA ESPACIAL COM PLANETAS E CONSTELAÇÕES ---
     const canvas = document.getElementById('space-canvas');
     const ctx = canvas.getContext('2d');
-
-    function resizeCanvas() {
-      canvas.width = window.innerWidth;
-      canvas.height = window.innerHeight;
-    }
+    function resizeCanvas() { canvas.width = window.innerWidth; canvas.height = window.innerHeight; }
     window.addEventListener('resize', resizeCanvas);
     resizeCanvas();
 
-    // 1. Campo de Estrelas 3D Retro
-    const stars = [];
-    const numStars = 200;
-    for (let i = 0; i < numStars; i++) {
-      stars.push({
-        x: (Math.random() - 0.5) * canvas.width * 2,
-        y: (Math.random() - 0.5) * canvas.height * 2,
-        z: Math.random() * canvas.width,
-        color: ['#ffffff', '#38bdf8', '#fef08a', '#f472b6', '#a855f7'][Math.floor(Math.random() * 5)]
-      });
-    }
-
-    // 2. Constelações Pixel Art (Pontos interligados por linhas)
-    const constellations = [
-      {
-        z: 700,
-        xOffset: -0.3,
-        yOffset: -0.2,
-        stars: [
-          {x: 0, y: 0}, {x: 40, y: -20}, {x: 80, y: 10}, {x: 120, y: -10}, {x: 60, y: -50}
-        ],
-        lines: [[0,1], [1,2], [2,3], [1,4]]
-      },
-      {
-        z: 900,
-        xOffset: 0.25,
-        yOffset: 0.2,
-        stars: [
-          {x: 0, y: 0}, {x: -30, y: 40}, {x: 20, y: 70}, {x: 50, y: 30}
-        ],
-        lines: [[0,1], [1,2], [2,3], [3,0]]
-      }
-    ];
-
-    // 3. Planetas Coloridos Variados
-    const celestialObjects = [
-      { type: 'ringed', baseRadius: 28, color: '#38bdf8', ringColor: '#4ade80', z: 250, xOffset: -0.35, yOffset: 0.25 },
-      { type: 'craters', baseRadius: 38, color: '#f97316', craterColor: '#c2410c', z: 550, xOffset: 0.38, yOffset: -0.2 },
-      { type: 'striped', baseRadius: 48, color: '#e879f9', stripeColor: '#a855f7', z: 950, xOffset: -0.25, yOffset: -0.3 },
-      { type: 'small', baseRadius: 16, color: '#34d399', z: 350, xOffset: 0.3, yOffset: 0.35 },
-      { type: 'sun', baseRadius: 32, color: '#facc15', glowColor: '#f43f5e', z: 750, xOffset: -0.4, yOffset: -0.1 }
-    ];
+    const stars = Array.from({length: 180}, () => ({
+      x: (Math.random() - 0.5) * canvas.width * 2,
+      y: (Math.random() - 0.5) * canvas.height * 2,
+      z: Math.random() * canvas.width,
+      color: ['#ffffff', '#38bdf8', '#fef08a', '#f472b6'][Math.floor(Math.random() * 4)]
+    }));
 
     function drawSpace() {
-      // Fundo Espacial Noturno
-      ctx.fillStyle = '#060214';
-      ctx.fillRect(0, 0, canvas.width, canvas.height);
-
-      const cx = canvas.width / 2;
-      const cy = canvas.height / 2;
-
-      // --- Desenhar Estrelas de Fundo ---
+      ctx.fillStyle = '#060214'; ctx.fillRect(0, 0, canvas.width, canvas.height);
+      const cx = canvas.width / 2, cy = canvas.height / 2;
       stars.forEach(star => {
         star.z -= 2.5;
-        if (star.z <= 0) {
-          star.z = canvas.width;
-          star.x = (Math.random() - 0.5) * canvas.width * 2;
-          star.y = (Math.random() - 0.5) * canvas.height * 2;
-        }
-
-        const k = 256 / star.z;
-        const px = star.x * k + cx;
-        const py = star.y * k + cy;
-
+        if (star.z <= 0) { star.z = canvas.width; star.x = (Math.random() - 0.5) * canvas.width * 2; star.y = (Math.random() - 0.5) * canvas.height * 2; }
+        const k = 256 / star.z, px = star.x * k + cx, py = star.y * k + cy;
         if (px >= 0 && px <= canvas.width && py >= 0 && py <= canvas.height) {
-          const size = Math.max(1, Math.floor((1 - star.z / canvas.width) * 4));
-          ctx.fillStyle = star.color;
-          ctx.fillRect(Math.floor(px), Math.floor(py), size, size);
+          ctx.fillStyle = star.color; ctx.fillRect(Math.floor(px), Math.floor(py), 2, 2);
         }
       });
-
-      // --- Desenhar Constelações ---
-      constellations.forEach(c => {
-        c.z -= 1.2;
-        if (c.z <= 10) c.z = 1100;
-
-        const scale = 300 / c.z;
-        const baseX = cx + (canvas.width * c.xOffset) * scale;
-        const baseY = cy + (canvas.height * c.yOffset) * scale;
-
-        // Desenhar Linhas da Constelação
-        ctx.strokeStyle = 'rgba(56, 189, 248, 0.4)';
-        ctx.lineWidth = Math.max(1, 2 * scale);
-        c.lines.forEach(([i, j]) => {
-          const p1 = { x: baseX + c.stars[i].x * scale, y: baseY + c.stars[i].y * scale };
-          const p2 = { x: baseX + c.stars[j].x * scale, y: baseY + c.stars[j].y * scale };
-          ctx.beginPath();
-          ctx.moveTo(p1.x, p1.y);
-          ctx.lineTo(p2.x, p2.y);
-          ctx.stroke();
-        });
-
-        // Desenhar Estrelas da Constelação
-        c.stars.forEach(s => {
-          const sx = baseX + s.x * scale;
-          const sy = baseY + s.y * scale;
-          ctx.fillStyle = '#fef08a';
-          ctx.fillRect(Math.floor(sx - 2), Math.floor(sy - 2), Math.max(3, 5 * scale), Math.max(3, 5 * scale));
-        });
-      });
-
-      // --- Desenhar Planetas ---
-      celestialObjects.forEach(obj => {
-        obj.z -= 1.2;
-        if (obj.z <= 10) obj.z = 1200;
-
-        const scale = 300 / obj.z;
-        const px = cx + (canvas.width * obj.xOffset) * scale;
-        const py = cy + (canvas.height * obj.yOffset) * scale;
-        const radius = Math.max(4, obj.baseRadius * scale);
-
-        if (px + radius > 0 && px - radius < canvas.width && py + radius > 0 && py - radius < canvas.height) {
-          ctx.save();
-          ctx.translate(px, py);
-
-          if (obj.type === 'ringed') {
-            ctx.fillStyle = obj.color;
-            ctx.beginPath();
-            ctx.arc(0, 0, radius, 0, Math.PI * 2);
-            ctx.fill();
-
-            ctx.strokeStyle = obj.ringColor;
-            ctx.lineWidth = Math.max(2, radius * 0.15);
-            ctx.beginPath();
-            ctx.ellipse(0, 0, radius * 1.7, radius * 0.45, Math.PI / 6, 0, Math.PI * 2);
-            ctx.stroke();
-
-          } else if (obj.type === 'craters') {
-            ctx.fillStyle = obj.color;
-            ctx.beginPath();
-            ctx.arc(0, 0, radius, 0, Math.PI * 2);
-            ctx.fill();
-
-            ctx.fillStyle = obj.craterColor;
-            ctx.beginPath();
-            ctx.arc(-radius * 0.3, -radius * 0.2, radius * 0.25, 0, Math.PI * 2);
-            ctx.arc(radius * 0.2, radius * 0.3, radius * 0.2, 0, Math.PI * 2);
-            ctx.fill();
-
-          } else if (obj.type === 'striped') {
-            ctx.fillStyle = obj.color;
-            ctx.beginPath();
-            ctx.arc(0, 0, radius, 0, Math.PI * 2);
-            ctx.fill();
-
-            ctx.fillStyle = obj.stripeColor;
-            ctx.fillRect(-radius * 0.8, -radius * 0.3, radius * 1.6, radius * 0.25);
-            ctx.fillRect(-radius * 0.9, radius * 0.1, radius * 1.8, radius * 0.2);
-
-          } else if (obj.type === 'sun') {
-            ctx.fillStyle = obj.glowColor;
-            ctx.beginPath();
-            ctx.arc(0, 0, radius * 1.3, 0, Math.PI * 2);
-            ctx.fill();
-
-            ctx.fillStyle = obj.color;
-            ctx.beginPath();
-            ctx.arc(0, 0, radius, 0, Math.PI * 2);
-            ctx.fill();
-
-          } else {
-            ctx.fillStyle = obj.color;
-            ctx.beginPath();
-            ctx.arc(0, 0, radius, 0, Math.PI * 2);
-            ctx.fill();
-          }
-
-          ctx.restore();
-        }
-      });
-
       requestAnimationFrame(drawSpace);
     }
-
     drawSpace();
 
-    // --- LÓGICA SOCKET.IO ---
     const socket = io();
-    let perguntaAtual = 0;
-    const totalPerguntas = 8;
+    let perguntaAtual = 1;
+    let totalPerguntasJogo = 8;
 
-    socket.on('atualizar_jogadores', (data) => {
-      let total = (typeof data === 'object' && data !== null) 
-        ? (data.qtd !== undefined ? data.qtd : (data.total || Object.keys(data).length)) 
-        : data;
-
-      const elementoContador = document.getElementById('contador-jogadores');
-      
-      if (total && total > 0) {
-        elementoContador.innerText = total;
-      } else {
-        elementoContador.innerText = "";
-      }
+    socket.on('atualizar_jogadores', (qtd) => {
+      document.getElementById('contador-jogadores').innerText = qtd || 0;
     });
 
     function iniciarJogo() {
@@ -421,55 +366,129 @@
     }
 
     function carregarPergunta(num) {
-      document.getElementById('box-resposta-certa').classList.add('hidden');
       socket.emit('solicitar_pergunta', num);
     }
 
     socket.on('dados_pergunta', (dados) => {
-      document.getElementById('p-numero-pergunta').innerText = `PERGUNTA ${dados.numero}/${totalPerguntas}`;
+      perguntaAtual = dados.numero;
+      totalPerguntasJogo = dados.totalPerguntas;
+
+      document.getElementById('p-numero-pergunta').innerText = `PERGUNTA ${dados.numero}/${dados.totalPerguntas}`;
       document.getElementById('p-texto-pergunta').innerText = dados.pergunta;
-      document.getElementById('p-img-cientista').src = dados.imagem;
-      document.getElementById('p-nome-cientista').innerText = `Cientista: ${dados.cientista}`;
-      document.getElementById('p-resposta-correta').innerText = `${dados.correta}) ${dados.opcoes[dados.correta]}`;
+
+      const container = document.getElementById('p-container-opcoes');
+      container.innerHTML = "";
+
+      Object.keys(dados.opcoes).forEach(chave => {
+        const div = document.createElement('div');
+        div.className = 'opcao-card';
+        div.innerHTML = `
+          <div class="medidor-barra" id="medidor-${chave}"></div>
+          <div class="opcao-conteudo">
+            <span class="opcao-texto">${dados.opcoes[chave]}</span>
+            <span class="opcao-contador" id="votos-${chave}">0% (0)</span>
+          </div>
+        `;
+        container.appendChild(div);
+      });
+    });
+
+    socket.on('atualizar_votos', (votos) => {
+      ['a', 'b', 'c', 'd'].forEach(chave => {
+        const elemBarra = document.getElementById(`medidor-${chave}`);
+        const elemTexto = document.getElementById(`votos-${chave}`);
+        
+        if (elemBarra && elemTexto) {
+          const qtd = votos[chave] || 0;
+          const pct = votos.total > 0 ? Math.round((qtd / votos.total) * 100) : 0;
+          
+          elemBarra.style.width = pct + '%';
+          elemTexto.innerText = `${pct}% (${qtd})`;
+        }
+      });
     });
 
     function revelarResposta() {
-      document.getElementById('box-resposta-certa').classList.remove('hidden');
+      socket.emit('revelar_resposta_servidor', perguntaAtual);
     }
 
-    function proximaPergunta() {
-      if (perguntaAtual < totalPerguntas) {
+    socket.on('mostrar_revelacao', (dados) => {
+      const letraCorreta = dados.correta;
+      document.getElementById('p-resposta-correta-box').innerHTML = `
+        <strong>RESPOSTA CORRETA:</strong> ${dados.opcoes[letraCorreta]}
+      `;
+
+      if (dados.cientista) {
+        document.getElementById('p-nome-cientista').innerText = dados.cientista.nome;
+        document.getElementById('p-cargo-cientista').innerText = dados.cientista.cargo;
+        document.getElementById('p-explicacao-cientista').innerText = dados.cientista.explicacao;
+        
+        const img = document.getElementById('p-img-cientista');
+        if (dados.cientista.imagem) {
+          img.src = dados.cientista.imagem;
+          img.style.display = 'block';
+        }
+      }
+
+      const btnProx = document.getElementById('btn-proxima-ou-ranking');
+      if (perguntaAtual >= totalPerguntasJogo) {
+        btnProx.innerText = "VER RANKING FINAL";
+        btnProx.style.background = "#eab308";
+        btnProx.style.color = "#000";
+      } else {
+        btnProx.innerText = "Próxima Pergunta ->";
+        btnProx.style.background = "#22c55e";
+        btnProx.style.color = "#fff";
+      }
+
+      document.getElementById('p-tela-pergunta').classList.add('hidden');
+      document.getElementById('p-tela-revelacao').classList.remove('hidden');
+    });
+
+    function proximaPerguntaOuRanking() {
+      if (perguntaAtual >= totalPerguntasJogo) {
+        socket.emit('solicitar_ranking');
+      } else {
+        document.getElementById('p-tela-revelacao').classList.add('hidden');
+        document.getElementById('p-tela-pergunta').classList.remove('hidden');
         perguntaAtual++;
         carregarPergunta(perguntaAtual);
-      } else {
-        socket.emit('encerrar_quiz');
-        document.getElementById('p-tela-pergunta').classList.add('hidden');
-        document.getElementById('p-tela-final').classList.remove('hidden');
       }
     }
 
-    socket.on('mural_atualizado', (sonhos) => {
-      const container = document.getElementById('mural-container');
+    socket.on('exibir_ranking_projetor', (ranking) => {
+      document.getElementById('p-tela-revelacao').classList.add('hidden');
+      document.getElementById('p-tela-ranking').classList.remove('hidden');
+
+      if (ranking[0]) { document.getElementById('nome-1').innerText = ranking[0].nome; document.getElementById('pts-1').innerText = `${ranking[0].pontos} pts`; }
+      if (ranking[1]) { document.getElementById('nome-2').innerText = ranking[1].nome; document.getElementById('pts-2').innerText = `${ranking[1].pontos} pts`; }
+      if (ranking[2]) { document.getElementById('nome-3').innerText = ranking[2].nome; document.getElementById('pts-3').innerText = `${ranking[2].pontos} pts`; }
+    });
+
+    socket.on('novo_sonho_mural', (dados) => {
+      const container = document.getElementById('mural-sonhos-lista');
+      const card = document.createElement('div');
+      card.className = 'sonho-card';
+      card.innerHTML = `<strong style="color: #facc15;">${dados.nome}:</strong> <span style="color: #fff;">"${dados.sonho}"</span>`;
+      container.prepend(card);
+    });
+
+    socket.on('atualizar_mural_completo', (listaSonhos) => {
+      const container = document.getElementById('mural-sonhos-lista');
       container.innerHTML = "";
-      sonhos.forEach(s => {
+      listaSonhos.forEach(item => {
         const card = document.createElement('div');
-        card.className = 'card-sonho';
-        card.innerHTML = `<strong>${s.nome}:</strong><br>"${s.sonho}"`;
-        container.appendChild(card);
+        card.className = 'sonho-card';
+        card.innerHTML = `<strong style="color: #facc15;">${item.nome}:</strong> <span style="color: #fff;">"${item.sonho}"</span>`;
+        container.prepend(card);
       });
     });
 
-    socket.on('podio_final', (podio) => {
-      const container = document.getElementById('podio-container');
-      container.innerHTML = "";
-      podio.forEach((p, idx) => {
-        const box = document.createElement('div');
-        box.className = 'podium-box';
-        const medalha = idx === 0 ? "1º" : idx === 1 ? "2º" : "3º";
-        box.innerHTML = `<span style="color: #facc15;">${medalha}</span> - ${p.nome} (${p.pontos} pts)`;
-        container.appendChild(box);
-      });
-    });
+    function irParaPrimeiroCodigo() {
+      socket.emit('iniciar_desafio_codigo');
+      document.getElementById('p-tela-ranking').classList.add('hidden');
+      document.getElementById('p-tela-terminal').classList.remove('hidden');
+    }
   </script>
 </body>
 </html>
