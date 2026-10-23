@@ -45,6 +45,53 @@
 
     .info-card { background: #0d0628; border: 2px dashed #facc15; padding: 20px; margin: 15px 0; }
     .hidden { display: none !important; }
+
+    /* TERMINAL */
+    .terminal-container {
+      background: #000000;
+      border: 3px solid #4ade80;
+      border-radius: 6px;
+      padding: 15px;
+      text-align: left;
+      font-family: monospace;
+      box-shadow: inset 0 0 15px rgba(74, 222, 128, 0.2);
+      margin-bottom: 15px;
+    }
+
+    .terminal-header {
+      border-bottom: 1px solid #15803d;
+      padding-bottom: 8px;
+      margin-bottom: 12px;
+      display: flex;
+      justify-content: space-between;
+      color: #16a34a;
+      font-size: 1rem;
+    }
+
+    .terminal-prompt {
+      display: flex;
+      align-items: center;
+      gap: 8px;
+      margin-top: 10px;
+    }
+
+    .prompt-symbol {
+      color: #f472b6;
+      font-size: 1.4rem;
+      font-weight: bold;
+    }
+
+    .terminal-input {
+      background: transparent !important;
+      border: none !important;
+      color: #4ade80 !important;
+      font-family: monospace !important;
+      font-size: 1.3rem !important;
+      padding: 0 !important;
+      margin: 0 !important;
+      box-shadow: none !important;
+      width: 100%;
+    }
   </style>
 </head>
 <body>
@@ -105,25 +152,42 @@
       </div>
     </div>
 
-    <!-- TELA 6: TERMINAL DE CÓDIGO INDIVIDUAL NO TELEMÓVEL -->
+    <!-- TELA 6: TERMINAL INTERATIVO DE PROGRAMAÇÃO -->
     <div id="c-tela-codigo" class="hidden">
-      <h1 style="font-size: 2.2rem; color: #facc15;">Seu Primeiro Código</h1>
-      <p style="color: #38bdf8; font-size: 1.2rem; margin-bottom: 8px;">Escreva o comando abaixo no campo de texto:</p>
+      <h1 style="font-size: 2.2rem; color: #facc15;">TERMINAL ESPACIAL</h1>
+      
+      <div class="terminal-container">
+        <div class="terminal-header">
+          <span>bash - python3 main.py</span>
+          <span>ONLINE</span>
+        </div>
 
-      <div style="background: #0d0628; border: 1px dashed #facc15; padding: 8px; margin-bottom: 12px; font-size: 1.2rem; color: #fef08a;">
-        Instrução: digite <strong style="color: #f472b6;">print("Olá, futuro Cientista!")</strong>
+        <p style="color: #94a3b8; font-size: 1.1rem; margin: 0 0 10px 0;">
+          # Digite o código abaixo e clique em EXECUTAR:<br>
+          <span style="color: #fef08a;">print("Ola, Futuro Cientista!")</span>
+        </p>
+
+        <div class="terminal-prompt">
+          <span class="prompt-symbol">></span>
+          <input 
+            type="text" 
+            id="campo-codigo-manual" 
+            class="terminal-input" 
+            placeholder='print("Ola, Futuro Cientista!")' 
+            autocomplete="off" 
+            autocorrect="off" 
+            autocapitalize="off" 
+            spellcheck="false">
+        </div>
+
+        <div id="terminal-saida-celular" class="hidden" style="margin-top: 15px; border-top: 1px dashed #15803d; padding-top: 10px;">
+          <p style="color: #22c55e; margin: 0; font-size: 1.1rem;">[COMPILANDO CÓDIGO...]</p>
+          <p id="linha-resultado-codigo" style="color: #38bdf8; font-size: 1.4rem; margin: 6px 0; font-weight: bold;"></p>
+          <p style="color: #facc15; margin: 6px 0 0 0; font-size: 1.1rem;">Sucesso! Programa executado sem erros.</p>
+        </div>
       </div>
 
-      <input type="text" id="campo-codigo-manual" placeholder='print("Olá, futuro Cientista!")' style="font-family: monospace; font-size: 1.1rem;">
-
-      <button id="btn-executar-codigo" class="btn-pixel" onclick="executarCodigoNoCelular()">EXECUTAR CÓDIGO</button>
-
-      <!-- TERMINAL DE SAÍDA NO PRÓPRIO TELEMÓVEL -->
-      <div id="terminal-saida-celular" class="hidden" style="background: #000; border: 2px solid #22c55e; padding: 15px; margin-top: 15px; text-align: left; font-family: monospace; box-shadow: inset 0 0 10px rgba(34, 197, 94, 0.3);">
-        <p style="color: #86efac; margin: 0 0 5px 0; font-size: 1.1rem;">> Executando script...</p>
-        <p id="linha-resultado-codigo" style="color: #38bdf8; font-size: 1.3rem; margin: 5px 0; font-weight: bold;"></p>
-        <p style="color: #facc15; margin: 10px 0 0 0; font-size: 1.1rem;">Parabéns! Você acabou de rodar sua primeira linha de código!</p>
-      </div>
+      <button id="btn-executar-codigo" class="btn-pixel" onclick="executarCodigoNoCelular()">> EXECUTAR CÓDIGO</button>
     </div>
 
   </div>
@@ -236,26 +300,92 @@
     });
 
     function executarCodigoNoCelular() {
-      const input = document.getElementById('campo-codigo-manual').value.trim();
-
-      if (!input) {
-        return alert("Escreva o código antes de executar!");
-      }
-
-      // Valida se escreveu uma função print básica
-      if (!input.toLowerCase().startsWith('print')) {
-        return alert('Escreva o comando utilizando print("...")!');
-      }
-
+      const inputElem = document.getElementById('campo-codigo-manual');
+      const input = inputElem.value.trim();
+      const terminalSaida = document.getElementById('terminal-saida-celular');
       const btn = document.getElementById('btn-executar-codigo');
-      btn.disabled = true;
 
-      // Extrai o texto dentro das aspas ou exibe mensagem com o nome do aluno
-      let conteudoExibicao = `Olá, futuro Cientista, ${meuNome}!`;
+      function tratarErro(tipo, mensagem, dica) {
+        terminalSaida.innerHTML = `
+          <p style="color: #ef4444; margin: 0; font-size: 1.1rem;">[${tipo}]</p>
+          <p style="color: #f87171; font-size: 1.2rem; margin: 6px 0; font-weight: bold;">> ${mensagem}</p>
+          <p style="color: #facc15; margin: 6px 0 0 0; font-size: 1.1rem;">Dica: ${dica}</p>
+        `;
+        terminalSaida.classList.remove('hidden');
+        inputElem.disabled = false;
+        inputElem.focus();
+        btn.innerText = "> EXECUTAR CÓDIGO";
+        btn.disabled = false;
+        btn.style.opacity = '1';
+      }
+
+      // 1. Campo vazio
+      if (!input) {
+        tratarErro("ERRO DE COMPILAÇÃO", "ValueError: O campo de texto está vazio!", "Escreva o comando print(\"Ola, Futuro Cientista!\") no terminal.");
+        return;
+      }
+
+      // 2. Valida se começa com print(
+      if (!input.toLowerCase().startsWith('print(')) {
+        tratarErro("ERRO DE SINTAXE", "NameError: comando print incorreto ou '(' inicial ausente.", "O comando precisa começar com print( exatamente como no exemplo.");
+        return;
+      }
+
+      // 3. Valida se termina com )
+      if (!input.endsWith(')')) {
+        tratarErro("ERRO DE SINTAXE", "SyntaxError: ')' de fechamento não encontrado.", "Não se esqueça de fechar o parêntese ')' no final do comando!");
+        return;
+      }
+
+      // 4. Extrai o conteúdo entre print( e )
+      const conteudoInterno = input.slice(6, -1).trim();
+
+      // 5. Valida se tem aspas de abertura e fechamento
+      const temAspasDuplas = conteudoInterno.startsWith('"') && conteudoInterno.endsWith('"') && conteudoInterno.length >= 2;
+      const temAspasSimples = conteudoInterno.startsWith("'") && conteudoInterno.endsWith("'") && conteudoInterno.length >= 2;
+
+      if (!temAspasDuplas && !temAspasSimples) {
+        tratarErro("ERRO DE SINTAXE", "SyntaxError: aspas de fechamento não encontradas ou texto sem aspas.", "O texto precisa estar totalmente entre aspas: \"Ola, Futuro Cientista!\".");
+        return;
+      }
+
+      // 6. Limpa o texto das aspas e normaliza para validar o conteúdo
+      const textoDigitado = conteudoInterno.slice(1, -1).trim();
       
-      document.getElementById('linha-resultado-codigo').innerText = `> Output: ${conteudoExibicao}`;
-      document.getElementById('terminal-saida-celular').classList.remove('hidden');
-      document.getElementById('campo-codigo-manual').disabled = true;
+      // Remove acentos, pontuações (!, ., etc) e converte para minúsculas
+      const textoLimpo = textoDigitado
+        .toLowerCase()
+        .normalize("NFD")
+        .replace(/[\u0300-\u036f]/g, "")
+        .replace(/[!,.:?]/g, "")
+        .replace(/\s+/g, " ")
+        .trim();
+
+      // Valida se contém a frase correta
+      if (textoLimpo !== "ola futuro cientista") {
+        tratarErro("TEXTO INCORRETO", "ValueError: Frase diferente do exemplo.", "Digite a frase: Ola, Futuro Cientista!");
+        return;
+      }
+
+      // --- SUCESSO VALIDADOR ---
+      const saidaFinal = `Ola, Futuro Cientista, ${meuNome}!`;
+
+      inputElem.disabled = true;
+      btn.disabled = true;
+      btn.style.opacity = '0.5';
+      btn.innerText = "> CÓDIGO EXECUTADO";
+
+      terminalSaida.innerHTML = `
+        <p style="color: #22c55e; margin: 0; font-size: 1.1rem;">[COMPILANDO CÓDIGO...]</p>
+        <p style="color: #38bdf8; font-size: 1.4rem; margin: 6px 0; font-weight: bold;">> Output: ${saidaFinal}</p>
+        <p style="color: #facc15; margin: 6px 0 0 0; font-size: 1.1rem;">Sucesso! Programa executado sem erros por ${meuNome}.</p>
+      `;
+      terminalSaida.classList.remove('hidden');
+
+      socket.emit('executou_codigo', {
+        nome: meuNome,
+        mensagem: saidaFinal
+      });
     }
   </script>
 </body>

@@ -8,50 +8,16 @@ const io = new Server(server);
 
 app.use(express.static('public'));
 
-// ESTRUTURA COMPLETA DAS 8 PERGUNTAS E REVELAÇÕES
+// ESTRUTURA COMPLETA DAS 6 PERGUNTAS E REVELAÇÕES
 const perguntas = [
   {
     numero: 1,
-    pergunta: "Em 1969, a minutos do pouso lunar da Apollo 11, o computador de bordo ficou sobrecarregado por sinais desnecessários de um radar. O software evitou o cancelamento da missão porque foi projetado para:",
+    pergunta: "Antes dos computadores modernos existirem, como a NASA descobria o caminho exato e a hora certa para lançar os foguetes e trazer os astronautas de volta para a Terra?",
     opcoes: {
-      a: "A) Desligar o computador e reiniciar em poucos segundos.",
-      b: "B) Priorizar as tarefas vitais para o pouso e ignorar os processos secundários.",
-      c: "C) Assumir o controle manual da nave automaticamente.",
-      d: "D) Transmitir os dados de erro para o controle em terra e aguardar uma atualização de código em tempo real."
-    },
-    correta: "b",
-    cientista: {
-      nome: "Margaret Hamilton",
-      cargo: "Diretora da Divisão de Engenharia de Software do Laboratório de Instrumentação do MIT",
-      imagem: "/img/margaret.jpg",
-      explicacao: "Liderou a criação do software de bordo da Apollo. Seu conceito inovador de arquitetura assíncrona e priorização de tarefas evitou o travamento do computador e salvou o pouso lunar histórico!"
-    }
-  },
-  {
-    numero: 2,
-    pergunta: "Para que os Sistemas Globais de Navegação por Satélite (como o GPS americano ou o Galileo europeu) consigam calcular a posição exata de um receptor na Terra, o que o computador precisa considerar?",
-    opcoes: {
-      a: "A) O formato geodésico exato da Terra e suas variações gravitacionais.",
-      b: "B) A distância entre a Terra e a Lua a cada segundo.",
-      c: "C) A quantidade de nuvens na atmosfera sobre o receptor.",
-      d: "D) A variação da velocidade da luz provocada pela rotação do núcleo terrestre."
-    },
-    correta: "a",
-    cientista: {
-      nome: "Gladys West",
-      cargo: "Matemática e Programadora da Marinha dos EUA",
-      imagem: "/img/gladys.jpg",
-      explicacao: "Programou os supercomputadores da Marinha para processar altimetria por satélite, gerando o modelo matemático ultrapreciso do geoide terrestre que é a base dos sistemas de GPS e navegação modernos!"
-    }
-  },
-  {
-    numero: 3,
-    pergunta: "Antes do uso generalizado de computadores eletrônicos para navegação em tempo real, como a NASA calculava com precisão as janelas de lançamento e as trajetórias de reentrada das cápsulas espaciais?",
-    opcoes: {
-      a: "A) Os astronautas calculavam visualmente durante o voo.",
-      b: "B) Uma equipe de matemáticas calculava as equações de mecânica celeste manualmente.",
-      c: "C) Os cálculos eram estimados por aproximações de tabelas astronômicas antigas.",
-      d: "D) A trajetória era corrigida automaticamente por giroscópios mecânicos sem necessidade de cálculo prévio."
+      a: "A) Os próprios astronautas calculavam tudo de olho durante o voo.",
+      b: "B) Uma equipe de matemáticas calculava todas as rotas e equações no papel, à mão.",
+      c: "C) Eles usavam tabelas de mapas antigos e faziam apenas um palpite.",
+      d: "D) Os foguetes seguiam bússolas mecânicas sem precisar de cálculos antes do lançamento."
     },
     correta: "b",
     cientista: {
@@ -62,13 +28,13 @@ const perguntas = [
     }
   },
   {
-    numero: 4,
-    pergunta: "Os primeiros computadores executavam apenas código em linguagem de máquina (instruções numéricas diretas). Qual inovação desenvolvida para facilitar a programação permitiu criar linguagens de alto nível usadas na robótica?",
+    numero: 2,
+    pergunta: "Os primeiros computadores só entendiam uma linguagem feita de números (0 e 1). O que foi inventado para que os programadores pudessem escrever comandos usando palavras simples e fáceis de entender?",
     opcoes: {
-      a: "A) A criação de telas sensíveis ao toque.",
-      b: "B) O desenvolvimento do Compilador, que traduz linguagens baseadas em palavras para código de máquina.",
-      c: "C) O invento dos circuitos integrados resistentes à radiação.",
-      d: "D) A substituição das válvulas por transistores de efeito de campo na memória RAM."
+      a: "A) Telas sensíveis ao toque que adivinham o que a gente quer digitar.",
+      b: "B) Programas tradutores que transformam palavras em códigos que a máquina entende.",
+      c: "C) Robôs que escutam a voz do programador e fazem o trabalho sozinhos.",
+      d: "D) Cabos de internet mais rápidos para enviar as informações."
     },
     correta: "b",
     cientista: {
@@ -79,62 +45,30 @@ const perguntas = [
     }
   },
   {
-    numero: 5,
-    pergunta: "Um buraco negro supermassivo não pode ser fotografado diretamente com uma única lente, pois exigiria um telescópio do tamanho da Terra. Como a equipe do Event Horizon Telescope gerou a primeira imagem do buraco negro M87* em 2019?",
+    numero: 3,
+    pergunta: "Em 1969, a poucos minutos de pousar na Lua, o computador da missão Apollo 11 travou porque recebeu muitas informações ao mesmo tempo. A missão não foi cancelada porque o programa do computador foi feito para:",
     opcoes: {
-      a: "A) Enviando uma sonda espacial para fotografá-lo de perto.",
-      b: "B) Utilizando um algoritmo para reconstruir imagens a partir de dados combinados de vários radiotelescópios pelo mundo.",
-      c: "C) Usando inteligência artificial para gerar uma ilustração baseada em teorias."
-    },
-    correta: "b",
-    cientista: {
-      nome: "Katie Bouman",
-      cargo: "Professora e Cientista da Computação",
-      imagem: "/img/katie.jpg",
-      explicacao: "Liderou o desenvolvimento do algoritmo CHIRP (Continuous High-resolution Image Reconstruction from Prompt Transformation), essencial para processar terabytes de dados e reconstruir a histórica primeira imagem de um buraco negro!"
-    }
-  },
-  {
-    numero: 6,
-    pergunta: "A atmosfera terrestre distorce a luz das estrelas e bloqueia certas frequências de radiação. Qual foi a solução técnica projetada para obter imagens astronômicas nítidas no óptico e ultravioleta?",
-    opcoes: {
-      a: "A) Construir telescópios dentro de câmaras de vácuo nas montanhas.",
-      b: "B) Colocar um observatório óptico em órbita baixa ao redor da Terra, acima da atmosfera.",
-      c: "C) Usar lasers gigantes para dissipar a umidade do ar sobre os observatórios."
-    },
-    correta: "b",
-    cientista: {
-      nome: "Nancy Grace Roman",
-      cargo: "Primeira Executiva-Chefe de Astronomia da NASA",
-      imagem: "/img/nancy.jpg",
-      explicacao: "Conhecida como a 'Mãe do Hubble', idealizou e estruturou todo o programa do Telescópio Espacial Hubble, convencendo o Congresso americano a financiar a missão que revolucionou a astronomia moderna!"
-    }
-  },
-  {
-    numero: 7,
-    pergunta: "Para enviar dados entre satélites e estações terrenas sem que o sinal seja interceptado ou sofrer interferência de outras redes, qual princípio de transmissão de rádio é utilizado?",
-    opcoes: {
-      a: "A) Transmissão por pulsos de luz infravermelha em linha reta contínua.",
-      b: "B) Uso de uma única frequência fixa de ondas curtas amadoras.",
-      c: "C) Salto de frequência (Frequency Hopping), alternando os canais de transmissão em código sincronizado.",
-      d: "D) Amplificação de sinal via cabos submarinos direcionais."
+      a: "A) Apagar todas as fotos antigas para liberar espaço na memória.",
+      b: "B) Passar o controle da nave para os astronautas pilotarem sozinhos.",
+      c: "C) Focar apenas nas tarefas mais importantes do pouso e ignorar as secundárias.",
+      d: "D) Desligar e reiniciar o sistema do zero em poucos segundos."
     },
     correta: "c",
     cientista: {
-      nome: "Hedy Lamarr",
-      cargo: "Inventora e Atriz",
-      imagem: "/img/hedy.jpg",
-      explicacao: "Co-patenteou o sistema de comunicação por salto de frequência na Segunda Guerra Mundial. Essa invenção serve como base fundamental para as tecnologias Wi-Fi, Bluetooth e redes de satélites criptografadas de hoje!"
+      nome: "Margaret Hamilton",
+      cargo: "Diretora da Divisão de Engenharia de Software do Laboratório de Instrumentação do MIT",
+      imagem: "/img/margaret.jpg",
+      explicacao: "Liderou a criação do software de bordo da Apollo. Seu conceito inovador de arquitetura assíncrona e priorização de tarefas evitou o travamento do computador e salvou o pouso lunar histórico!"
     }
   },
   {
-    numero: 8,
-    pergunta: "Como o sinal de rádio demora minutos para ir da Terra até Marte, o que o robô Perseverance precisa fazer quando encontra uma pedra no caminho?",
+    numero: 4,
+    pergunta: "Como o sinal de rádio demora minutos para ir da Terra até Marte, o que o robô Perseverance faz quando encontra uma pedra no caminho?",
     opcoes: {
-      a: "A) Esperar a equipe do INPE mandar o comando de desviar.",
-      b: "B) Usar o seu próprio programa de computador para desviar sozinho.",
-      c: "C) Dar a ré até o sinal de Wi-Fi voltar.",
-      d: "D) Buzinar para a pedra sair do caminho."
+      a: "A) Para e espera o sinal do controle na Terra mandando desviar.",
+      b: "B) Usa o seu próprio programa de computador para desviar sozinho.",
+      c: "C) Dá a ré até achar um sinal de Wi-Fi melhor.",
+      d: "D) Tira uma foto da pedra e espera o dia seguinte para andar."
     },
     correta: "b",
     cientista: {
@@ -142,6 +76,40 @@ const perguntas = [
       cargo: "Engenheira de Robótica Espacial do JPL / NASA",
       imagem: "/img/vandi.jpg",
       explicacao: "Desenvolve os sistemas de inteligência artificial e navegação autônoma dos rovers de Marte, permitindo que robôs como o Perseverance naveguem e tomem decisões de desvio sozinhos no solo marciano!"
+    }
+  },
+  {
+    numero: 5,
+    pergunta: "O INPE (Instituto Nacional de Pesquisas Espaciais), no Brasil, usa satélites para observar a Floresta Amazônica lá do espaço. Como esses satélites conseguem descobrir onde está acontecendo um desmatamento ou uma queimada no meio da mata fechada?",
+    opcoes: {
+      a: "A) Tirando fotos diárias da floresta e usando programas de computador para comparar o que mudou na vegetação.",
+      b: "B) Mandando robôs terrestres para andarem no meio da mata procurando fumaça.",
+      c: "C) Medindo o calor da floresta usando o sinal de Wi-Fi dos celulares da região.",
+      d: "D) Esperando os animais da floresta fazerem barulho para o satélite escutar o som."
+    },
+    correta: "a",
+    cientista: {
+      nome: "INPE - Instituto Nacional de Pesquisas Espaciais",
+      cargo: "Instituição de Pesquisa do Governo Brasileiro",
+      imagem: "/img/inpe.jpg",
+      explicacao: "O INPE usa satélites (como o Amazônia 1) que tiram fotos do espaço e softwares de computador para comparar as imagens da vegetação em tempo real. Se o verde da mata sumir ou houver calor, o sistema emite um alerta imediato para proteger a floresta!"
+    }
+  },
+  {
+    numero: 6,
+    pergunta: "Para descobrir a posição exata de um celular utilizando um sistema chamado GPS (que envolve descobrir a localização real por satélite), o que é preciso levar em consideração:",
+    opcoes: {
+      a: "A) O formato real e irregular da Terra e as variações da sua gravidade.",
+      b: "B) A distância exata entre a Terra e a Lua a cada segundo.",
+      c: "C) A quantidade de nuvens no céu no local onde a pessoa está.",
+      d: "D) O cansaço do sinal de luz provocado pelo giro do centro da Terra."
+    },
+    correta: "a",
+    cientista: {
+      nome: "Gladys West",
+      cargo: "Matemática e Programadora da Marinha dos EUA",
+      imagem: "/img/gladys.jpg",
+      explicacao: "Programou os supercomputadores da Marinha para processar altimetria por satélite, gerando o modelo matemático ultrapreciso do geoide terrestre que é a base dos sistemas de GPS e navegação modernos!"
     }
   }
 ];
