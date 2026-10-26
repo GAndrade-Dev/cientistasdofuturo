@@ -1,5 +1,5 @@
 const express = require('express');
-const http = require('http');
+const http = require('http');nast
 const { Server } = require('socket.io');
 
 const app = express();
@@ -200,7 +200,8 @@ io.on('connection', (socket) => {
   });
 });
 
-const PORT = 3000;
-server.listen(PORT, () => {
-  console.log(`🚀 Servidor rodando em http://localhost:${PORT}`);
+const PORT = process.env.PORT || 3000;
+
+http.listen(PORT, '0.0.0.0', () => {
+    console.log(`Servidor rodando na porta ${PORT}`);
 });
