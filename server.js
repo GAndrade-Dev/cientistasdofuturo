@@ -1,12 +1,18 @@
 const express = require('express');
-const http = require('http');nast
+const http = require('http');
 const { Server } = require('socket.io');
+const path = require('path'); // Adicione o 'path' aqui no topo
 
 const app = express();
 const server = http.createServer(app);
 const io = new Server(server);
 
 app.use(express.static('public'));
+
+// Rota para entregar o index.html na raiz
+app.get('/', (req, res) => {
+    res.sendFile(path.join(__dirname, 'public', 'index.html'));
+});
 
 // ESTRUTURA COMPLETA DAS 6 PERGUNTAS E REVELAÇÕES
 const perguntas = [
@@ -202,6 +208,6 @@ io.on('connection', (socket) => {
 
 const PORT = process.env.PORT || 3000;
 
-http.listen(PORT, '0.0.0.0', () => {
+server.listen(PORT, '0.0.0.0', () => {
     console.log(`Servidor rodando na porta ${PORT}`);
 });
